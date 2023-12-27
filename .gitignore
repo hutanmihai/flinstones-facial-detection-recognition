@@ -8,3 +8,7 @@ out/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# BIG DATA
+data/train/collapsed/
+data/train/collapsed_annotations.txt
