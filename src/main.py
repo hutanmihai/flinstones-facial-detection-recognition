@@ -71,10 +71,10 @@ if __name__ == "__main__":
     # Train the classifier
     train_classifier()
 
-    # for image_index in annotations.keys():
-    #     image: np.ndarray = train_images[int(image_index)]
-    #     for coordinates, character in annotations[image_index]:
-    #         xmin, ymin, xmax, ymax = coordinates
-    #         cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 3)
-    #     if int(image_index) in [1261, 3639, 3670]:
-    #         show_image(image, image_index)
+    for image_index in annotations.keys():
+        image: np.ndarray = train_images[int(image_index)]
+        for coordinates, character in annotations[image_index]:
+            xmin, ymin, xmax, ymax = coordinates
+            cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 1)
+        # if int(image_index) in [1261, 3639, 3670]:
+        show_image(image, image_index)
