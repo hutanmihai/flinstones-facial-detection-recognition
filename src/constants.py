@@ -62,3 +62,11 @@ COLOR_CHARACTER_MAPPING = {
     "wilma": (106, 228, 242),
     "unknown": (0, 0, 255),
 }
+
+# Image size
+MAX_WIDTH = 480
+MAX_HEIGHT = 360
+
+# Negatives constants
+MIN_WIDTH = 30
+MIN_HEIGHT = 30
