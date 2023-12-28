@@ -12,6 +12,7 @@ from src.constants import (
     COLLAPSED_NUMPY_PATH,
     COLLAPSED_ANNOTATIONS_PATH,
     TRAIN_DATA_PATH,
+    TRAIN_ANNOTATIONS_PATH,
 )
 
 
@@ -23,9 +24,7 @@ def collapse():
     np.save(COLLAPSED_NUMPY_PATH, images)
 
     with open(COLLAPSED_ANNOTATIONS_PATH, "w") as f:
-        for i, annotation_path in enumerate(
-            [BARNEY_ANNOTATIONS_PATH, BETTY_ANNOTATIONS_PATH, FRED_ANNOTATIONS_PATH, WILMA_ANNOTATIONS_PATH]
-        ):
+        for i, annotation_path in enumerate(TRAIN_ANNOTATIONS_PATH):
             annotations = get_annotations(annotation_path)
             new_annotations = {}
             for image_name, annotation in annotations.items():

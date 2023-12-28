@@ -37,6 +37,13 @@ BARNEY_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "barney_annotations.txt"
 BETTY_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "betty_annotations.txt"
 FRED_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "fred_annotations.txt"
 WILMA_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "wilma_annotations.txt"
+
+TRAIN_ANNOTATIONS_PATH = (
+    BARNEY_ANNOTATIONS_PATH,
+    BETTY_ANNOTATIONS_PATH,
+    FRED_ANNOTATIONS_PATH,
+    WILMA_ANNOTATIONS_PATH,
+)
 VALIDATION_ANOTATIONS_PATH = VALIDATION_DATA_PATH / "validation_annotations.txt"
 
 # Positives and negatives paths
@@ -46,3 +53,12 @@ NEGATIVES_PATH = Path("../data/negatives")
 # Collapsed paths
 COLLAPSED_NUMPY_PATH = Path("../data/train/collapsed/train_images.npy")
 COLLAPSED_ANNOTATIONS_PATH = Path("../data/train/collapsed_annotations.txt")
+
+# Color - character mapping
+COLOR_CHARACTER_MAPPING = {
+    "barney": (204, 255, 204),
+    "betty": (204, 0, 102),
+    "fred": (255, 178, 102),
+    "wilma": (106, 228, 242),
+    "unknown": (0, 0, 255),
+}
