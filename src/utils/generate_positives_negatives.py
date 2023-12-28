@@ -36,7 +36,7 @@ def extract_positives(images: np.ndarray, annotations: dict[str, list[tuple[tupl
         image: np.ndarray = images[int(image_index)]
         for coordinates, character in annotations[image_index]:
             xmin, ymin, xmax, ymax = coordinates
-            cv.imwrite(f"{POSITIVES_PATH}/{image_index}_{counter}.jpg", image[ymin:ymax, xmin:xmax])
+            cv.imwrite(f"{POSITIVES_PATH}/{str(image_index).zfill(4)}_{counter}.jpg", image[ymin:ymax, xmin:xmax])
             counter += 1
 
 
@@ -57,7 +57,10 @@ def extract_negatives(images: np.ndarray, annotations: dict[str, list[tuple[tupl
             y = randint(0, MAX_HEIGHT - height)
             box = (x, y, x + width, y + height)
             if check_overlap(box, coordinates):
-                cv.imwrite(f"{NEGATIVES_PATH}/{image_index}_{counter}.jpg", image[y : y + height, x : x + width])
+                cv.imwrite(
+                    f"{NEGATIVES_PATH}/{str(image_index).zfill(4)}_{counter}.jpg".zfill(5),
+                    image[y : y + height, x : x + width],
+                )
                 counter += 1
 
 

@@ -50,6 +50,10 @@ VALIDATION_ANOTATIONS_PATH = VALIDATION_DATA_PATH / "validation_annotations.txt"
 POSITIVES_PATH = Path("../data/positives")
 NEGATIVES_PATH = Path("../data/negatives")
 
+# Positives and negatives globs
+POSITIVES_GLOB = sorted(glob(str(POSITIVES_PATH / "*.jpg")))
+NEGATIVES_GLOB = sorted(glob(str(NEGATIVES_PATH / "*.jpg")))
+
 # Collapsed paths
 COLLAPSED_NUMPY_PATH = Path("../data/train/collapsed/train_images.npy")
 COLLAPSED_ANNOTATIONS_PATH = Path("../data/train/collapsed_annotations.txt")
