@@ -5,14 +5,13 @@ import cv2 as cv
 import numpy as np
 
 from src.constants import (
-    MAX_HEIGHT,
-    MAX_WIDTH,
     NEGATIVES_PATH,
     NEGATIVES_VALIDATION_PATH,
-    POS_NEG_HEIGHT,
-    POS_NEG_WIDTH,
     POSITIVES_PATH,
     POSITIVES_VALIDATION_PATH,
+    DIM_HOG_WINDOW,
+    IMAGE_WIDTH,
+    IMAGE_HEIGHT,
 )
 from src.utils.helpers import check_if_dirs_exist
 
@@ -34,7 +33,7 @@ def extract_positives(
         image: np.ndarray = images[int(image_index)]
         for coordinates, character in annotations[image_index]:
             xmin, ymin, xmax, ymax = coordinates
-            box = cv.resize(image[ymin:ymax, xmin:xmax], (POS_NEG_WIDTH, POS_NEG_HEIGHT))
+            box = cv.resize(image[ymin:ymax, xmin:xmax], (DIM_HOG_WINDOW, DIM_HOG_WINDOW))
             cv.imwrite(f"{path}/{str(image_index).zfill(4)}_{counter}.jpg", box)
             counter += 1
 
@@ -49,13 +48,13 @@ def extract_negatives(
         coordinates = [coord for coord, _ in annotations[image_index]]
 
         while counter < len(coordinates) * 2:  # * 2 because we will flip the positives for more data
-            x = randint(0, MAX_WIDTH - POS_NEG_WIDTH)
-            y = randint(0, MAX_HEIGHT - POS_NEG_HEIGHT)
-            box = (x, y, x + POS_NEG_WIDTH, y + POS_NEG_HEIGHT)
+            x = randint(0, IMAGE_WIDTH - DIM_HOG_WINDOW)
+            y = randint(0, IMAGE_HEIGHT - DIM_HOG_WINDOW)
+            box = (x, y, x + DIM_HOG_WINDOW, y + DIM_HOG_WINDOW)
             if check_overlap(box, coordinates):
                 cv.imwrite(
                     f"{path}/{str(image_index).zfill(4)}_{counter}.jpg".zfill(5),
-                    image[y : y + POS_NEG_HEIGHT, x : x + POS_NEG_WIDTH],
+                    image[y : y + DIM_HOG_WINDOW, x : x + DIM_HOG_WINDOW],
                 )
                 counter += 1
 
