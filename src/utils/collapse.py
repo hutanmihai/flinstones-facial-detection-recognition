@@ -13,6 +13,9 @@ from src.constants import (
     COLLAPSED_ANNOTATIONS_PATH,
     TRAIN_DATA_PATH,
     TRAIN_ANNOTATIONS_PATH,
+    VALIDATION_IMAGES,
+    VALIDATION_ANNOTATIONS_PATH,
+    VALIDATION_DATA_PATH,
 )
 
 
@@ -29,9 +32,10 @@ def collapse():
             new_annotations = {}
             for image_name, annotation in annotations.items():
                 image_name_int = int(image_name.split(".")[0])
-                image_name_int += i * 1000 - 1  # -1 because we start from 0 in the numpy array
+                image_name_int += i * 1000
                 new_annotations[image_name_int] = annotation
 
             for image_index, annotation in new_annotations.items():
+                image_index = str(image_index).zfill(4) + ".jpg"
                 for box, character in annotation:
                     f.write(f"{image_index} {box[0]} {box[1]} {box[2]} {box[3]} {character}\n")
