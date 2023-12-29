@@ -71,6 +71,6 @@ COLOR_CHARACTER_MAPPING = {
 MAX_WIDTH = 480
 MAX_HEIGHT = 360
 
-# Negatives constants
-MIN_WIDTH = 30
-MIN_HEIGHT = 30
+# Positives Negatives constants
+POS_NEG_WIDTH = 40
+POS_NEG_HEIGHT = 40

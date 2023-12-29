@@ -5,10 +5,10 @@ import os
 from src.constants import (
     POSITIVES_PATH,
     NEGATIVES_PATH,
-    MIN_WIDTH,
     MAX_WIDTH,
-    MIN_HEIGHT,
     MAX_HEIGHT,
+    POS_NEG_WIDTH,
+    POS_NEG_HEIGHT,
 )
 from random import randint
 
@@ -36,7 +36,8 @@ def extract_positives(images: np.ndarray, annotations: dict[str, list[tuple[tupl
         image: np.ndarray = images[int(image_index)]
         for coordinates, character in annotations[image_index]:
             xmin, ymin, xmax, ymax = coordinates
-            cv.imwrite(f"{POSITIVES_PATH}/{str(image_index).zfill(4)}_{counter}.jpg", image[ymin:ymax, xmin:xmax])
+            box = cv.resize(image[ymin:ymax, xmin:xmax], (POS_NEG_WIDTH, POS_NEG_HEIGHT))
+            cv.imwrite(f"{POSITIVES_PATH}/{str(image_index).zfill(4)}_{counter}.jpg", box)
             counter += 1
 
 
@@ -48,18 +49,13 @@ def extract_negatives(images: np.ndarray, annotations: dict[str, list[tuple[tupl
         coordinates = [coord for coord, _ in annotations[image_index]]
 
         while counter < len(coordinates) * 2:  # * 2 because we will flip the positives for more data
-            width = randint(MIN_WIDTH, MAX_WIDTH - 100)
-            min_height = max(int(width * 0.8), MIN_HEIGHT)
-            max_height = min(int(width * 1.2), MAX_HEIGHT)
-            height = randint(min_height, max_height)
-
-            x = randint(0, MAX_WIDTH - width)
-            y = randint(0, MAX_HEIGHT - height)
-            box = (x, y, x + width, y + height)
+            x = randint(0, MAX_WIDTH - POS_NEG_WIDTH)
+            y = randint(0, MAX_HEIGHT - POS_NEG_HEIGHT)
+            box = (x, y, x + POS_NEG_WIDTH, y + POS_NEG_HEIGHT)
             if check_overlap(box, coordinates):
                 cv.imwrite(
                     f"{NEGATIVES_PATH}/{str(image_index).zfill(4)}_{counter}.jpg".zfill(5),
-                    image[y : y + height, x : x + width],
+                    image[y : y + POS_NEG_HEIGHT, x : x + POS_NEG_WIDTH],
                 )
                 counter += 1
 
