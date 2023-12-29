@@ -1,26 +1,20 @@
 from pathlib import Path
-
-import numpy as np
-import cv2 as cv
-import os
-
-from src.constants import (
-    POSITIVES_PATH,
-    NEGATIVES_PATH,
-    MAX_WIDTH,
-    MAX_HEIGHT,
-    POS_NEG_WIDTH,
-    POS_NEG_HEIGHT,
-    POSITIVES_VALIDATION_PATH,
-    NEGATIVES_VALIDATION_PATH,
-)
 from random import randint
 
+import cv2 as cv
+import numpy as np
 
-def check_if_dirs_exist(paths: list[Path]) -> None:
-    for path in paths:
-        if not os.path.exists(path):
-            os.makedirs(path)
+from src.constants import (
+    MAX_HEIGHT,
+    MAX_WIDTH,
+    NEGATIVES_PATH,
+    NEGATIVES_VALIDATION_PATH,
+    POS_NEG_HEIGHT,
+    POS_NEG_WIDTH,
+    POSITIVES_PATH,
+    POSITIVES_VALIDATION_PATH,
+)
+from src.utils.helpers import check_if_dirs_exist
 
 
 def check_overlap(box, coordinates):

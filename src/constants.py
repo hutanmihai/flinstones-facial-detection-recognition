@@ -1,5 +1,5 @@
-from pathlib import Path
 from glob import glob
+from pathlib import Path
 
 # Main paths
 TRAIN_DATA_PATH = Path("../data/train")
@@ -12,6 +12,7 @@ BETTY_IMAGES_PATH = TRAIN_DATA_PATH / "betty"
 FRED_IMAGES_PATH = TRAIN_DATA_PATH / "fred"
 WILMA_IMAGES_PATH = TRAIN_DATA_PATH / "wilma"
 VALIDATION_IMAGES_PATH = VALIDATION_DATA_PATH / "images"
+NUMPY_PATH = Path("../data/numpy")
 
 # Sorted Images globs
 BARNEY_IMAGES = sorted(glob(str(BARNEY_IMAGES_PATH / "*.jpg")))
@@ -45,7 +46,6 @@ TRAIN_ANNOTATIONS_PATH = (
     WILMA_ANNOTATIONS_PATH,
 )
 VALIDATION_ANNOTATIONS_PATH = VALIDATION_DATA_PATH / "validations_annotations.txt"
-GOOD_VALIDATION_ANNOTATIONS_PATH = VALIDATION_DATA_PATH / "val_annotations.txt"
 
 # Positives and negatives paths
 POSITIVES_PATH = Path("../data/positives")
@@ -62,8 +62,10 @@ POSITIVES_VALIDATION_GLOB = sorted(glob(str(POSITIVES_VALIDATION_PATH / "*.jpg")
 NEGATIVES_VALIDATION_GLOB = sorted(glob(str(NEGATIVES_VALIDATION_PATH / "*.jpg")))
 
 # Collapsed paths
-COLLAPSED_NUMPY_PATH = Path("../data/train/collapsed/train_images.npy")
+COLLAPSED_NUMPY_PATH = Path("../data/numpy/train_images.npy")
 COLLAPSED_ANNOTATIONS_PATH = Path("../data/train/collapsed_annotations.txt")
+
+VALIDATION_NUMPY_PATH = Path("../data/numpy/validation_images.npy")
 
 # Color - character mapping
 COLOR_CHARACTER_MAPPING = {

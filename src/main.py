@@ -1,28 +1,29 @@
+import pickle
+
+import cv2 as cv
 import numpy as np
+from skimage.feature import hog
 from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 
-from src.utils.collapse import collapse
 from src.constants import (
     COLLAPSED_ANNOTATIONS_PATH,
     COLLAPSED_NUMPY_PATH,
     COLOR_CHARACTER_MAPPING,
-    POSITIVES_GLOB,
     NEGATIVES_GLOB,
-    VALIDATION_IMAGES_PATH,
-    VALIDATION_IMAGES,
+    POSITIVES_GLOB,
     VALIDATION_ANNOTATIONS_PATH,
-    GOOD_VALIDATION_ANNOTATIONS_PATH,
+    VALIDATION_IMAGES,
+    VALIDATION_IMAGES_PATH,
+    VALIDATION_NUMPY_PATH,
 )
+from src.utils.collapse import collapse, save_train_images_numpy, save_validation_images_numpy
 from src.utils.generate_positives_negatives import (
     extract_positives_and_negatives,
     extract_positives_and_negatives_validation,
 )
-from src.utils.helpers import show_image, get_index_from_image_name
+from src.utils.helpers import show_image
 from src.utils.readers import get_annotations, get_images
-from skimage.feature import hog
-import pickle
-import cv2 as cv
 
 
 def get_positive_descriptors():
@@ -71,15 +72,17 @@ def get_negatives_descriptors():
 
 
 if __name__ == "__main__":
-    # Collapse the images and annotations
+    # Collapse the images and annotations, save numpys
+    # save_train_images_numpy()
+    # save_validation_images_numpy()
     # collapse()
 
     # Initialize the annotations and images
     train_images = np.load(COLLAPSED_NUMPY_PATH)
     annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
 
-    # validation_images = np.array(get_images(VALIDATION_IMAGES))
-    # validation_annotations = get_annotations(GOOD_VALIDATION_ANNOTATIONS_PATH)
+    validation_images = np.load(VALIDATION_NUMPY_PATH)
+    validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
 
     # Generate the positives and negatives
     # extract_positives_and_negatives(train_images, annotations)
@@ -88,10 +91,17 @@ if __name__ == "__main__":
     # Train the classifier
     # train_classifier()
 
-    for image_index in annotations.keys():
-        image: np.ndarray = train_images[int(image_index)]
-        for coordinates, character in annotations[image_index]:
-            xmin, ymin, xmax, ymax = coordinates
-            cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 1)
-        # if int(image_index) in [1261, 3639, 3670]:
-        show_image(image, image_index)
+    # for image_index in annotations.keys():
+    #     image: np.ndarray = train_images[int(image_index)]
+    #     for coordinates, character in annotations[image_index]:
+    #         xmin, ymin, xmax, ymax = coordinates
+    #         cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 1)
+    #     # if int(image_index) in [1261, 3639, 3670]:
+    #     show_image(image, image_index)
+
+    # for image_index in validation_annotations.keys():
+    #     image: np.ndarray = validation_images[int(image_index)]
+    #     for coordinates, character in validation_annotations[image_index]:
+    #         xmin, ymin, xmax, ymax = coordinates
+    #         cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 1)
+    #     show_image(image, image_index)
