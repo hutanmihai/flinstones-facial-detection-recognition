@@ -1,30 +1,17 @@
-import pickle
-
 import cv2 as cv
 import numpy as np
 from skimage.feature import hog
-from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 
 from src.constants import (
     COLLAPSED_ANNOTATIONS_PATH,
     COLLAPSED_NUMPY_PATH,
-    COLOR_CHARACTER_MAPPING,
     NEGATIVES_GLOB,
     POSITIVES_GLOB,
     VALIDATION_ANNOTATIONS_PATH,
-    VALIDATION_IMAGES,
-    VALIDATION_IMAGES_PATH,
     VALIDATION_NUMPY_PATH,
 )
-from src.utils.collapse import collapse, save_train_images_numpy, save_validation_images_numpy
-from src.utils.generate_positives_negatives import (
-    extract_positives_and_negatives,
-    extract_positives_and_negatives_validation,
-)
-from src.utils.helpers import show_image
 from src.utils.readers import get_annotations, get_images
-from src.utils.visualize import visualize_images_with_boxes
 
 
 def get_positive_descriptors():
@@ -76,7 +63,6 @@ if __name__ == "__main__":
     # Initialize the annotations and images
     train_images = np.load(COLLAPSED_NUMPY_PATH)
     annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
-
     validation_images = np.load(VALIDATION_NUMPY_PATH)
     validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
 
@@ -88,5 +74,5 @@ if __name__ == "__main__":
     # train_classifier()
 
     # Visualize data
-    visualize_images_with_boxes(train_images, annotations)
-    visualize_images_with_boxes(validation_images, validation_annotations)
+    # visualize_images_with_boxes(train_images, annotations)
+    # visualize_images_with_boxes(validation_images, validation_annotations)
