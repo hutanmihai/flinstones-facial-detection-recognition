@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 from skimage.feature import hog
+from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 
 from src.constants import (
@@ -10,6 +11,8 @@ from src.constants import (
     POSITIVES_GLOB,
     VALIDATION_ANNOTATIONS_PATH,
     VALIDATION_NUMPY_PATH,
+    POSITIVES_VALIDATION_GLOB,
+    NEGATIVES_VALIDATION_GLOB,
 )
 from src.utils.readers import get_annotations, get_images
 
@@ -17,13 +20,13 @@ from src.utils.readers import get_annotations, get_images
 def get_positive_descriptors():
     images = get_images(POSITIVES_GLOB)
     # Convert to grayscale
-    images = [cv.cvtColor(image, cv.COLOR_RGB2GRAY) for image in images]
+    images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in images]
     descriptors = []
     for image in images:
-        features = hog(image, feature_vector=True)
+        features = hog(image)
         descriptors.append(features)
 
-        features = hog(np.fliplr(image), feature_vector=True)
+        features = hog(np.fliplr(image))
         descriptors.append(features)
 
     descriptors = np.array(descriptors)
@@ -36,8 +39,8 @@ def get_negatives_descriptors():
     images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in images]
     descriptors = []
     for image in images:
-        features = hog(image, feature_vector=False)
-        descriptors.append(features.flatten())
+        features = hog(image)
+        descriptors.append(features)
 
     descriptors = np.array(descriptors)
     return descriptors
@@ -48,10 +51,11 @@ def train_classifier():
     negative_features = get_negatives_descriptors()
     training_examples = np.concatenate((np.squeeze(positive_features), np.squeeze(negative_features)), axis=0)
     train_labels = np.concatenate((np.ones(positive_features.shape[0]), np.zeros(negative_features.shape[0])))
-    model = LinearSVC()
+    model = LinearSVC(dual=True)
     model.fit(training_examples, train_labels)
     acc = model.score(training_examples, train_labels)
     print(f"Accuracy: {acc}")
+    return model
 
 
 if __name__ == "__main__":
@@ -61,17 +65,29 @@ if __name__ == "__main__":
     # collapse()
 
     # Initialize the annotations and images
-    train_images = np.load(COLLAPSED_NUMPY_PATH)
-    annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
-    validation_images = np.load(VALIDATION_NUMPY_PATH)
-    validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    # train_images = np.load(COLLAPSED_NUMPY_PATH)
+    # annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
+    # validation_images = np.load(VALIDATION_NUMPY_PATH)
+    # validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
 
     # Generate the positives and negatives
     # extract_positives_and_negatives(train_images, annotations)
     # extract_positives_and_negatives_validation(validation_images, validation_annotations)
 
     # Train the classifier
-    # train_classifier()
+    model = train_classifier()
+    val_positives = get_images(POSITIVES_VALIDATION_GLOB)
+    val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)
+    val_positives = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in val_positives]
+    val_negatives = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in val_negatives]
+    val_pos_features = [hog(image) for image in val_positives]
+    val_neg_features = [hog(image) for image in val_negatives]
+    val_pos_features = np.array(val_pos_features)
+    val_neg_features = np.array(val_neg_features)
+    val_examples = np.concatenate((np.squeeze(val_pos_features), np.squeeze(val_neg_features)), axis=0)
+    val_labels = np.concatenate((np.ones(len(val_pos_features)), np.zeros(len(val_neg_features))))
+    predictions = model.predict(val_examples)
+    print(f"Accuracy: {accuracy_score(val_labels ,predictions)}")
 
     # Visualize data
     # visualize_images_with_boxes(train_images, annotations)
