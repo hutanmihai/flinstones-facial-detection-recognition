@@ -27,8 +27,12 @@ TRAIN_IMAGES = BARNEY_IMAGES + BETTY_IMAGES + FRED_IMAGES + WILMA_IMAGES
 VALIDATION_IMAGES = sorted(glob(str(VALIDATION_IMAGES_PATH / "*.jpg")))
 
 # Solution paths
-TRAIN_SOLUTION_PATH = Path("../data/train_solution.txt")
-TEST_SOLUTION_PATH = Path("../data/test_solution.txt")
+SOLUTION_PATH = Path("../solution/")
+SOLUTION_TASK1_PATH = SOLUTION_PATH / "task1"
+
+SOLUTION_DETECTIONS_PATH = SOLUTION_TASK1_PATH / "detections_all_faces.npy"
+SOLUTION_SCORES_PATH = SOLUTION_TASK1_PATH / "scores_all_faces.npy"
+SOLUTION_FILE_NAMES_PATH = SOLUTION_TASK1_PATH / "file_names_all_faces.npy"
 
 # Ground truth paths
 TASK1_GT_PATH = Path("../data/validation/task1_gt_validation.txt")
@@ -89,7 +93,7 @@ CELLS_PER_BLOCK = (2, 2)
 ORIENTATIONS = 24
 
 # Detection score threshold
-THRESHOLD = 4
+THRESHOLD = 3
 
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480

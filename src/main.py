@@ -23,11 +23,15 @@ from src.constants import (
     IMAGE_WIDTH,
     COLLAPSED_NUMPY_PATH,
     COLLAPSED_ANNOTATIONS_PATH,
+    SOLUTION_PATH,
+    SOLUTION_DETECTIONS_PATH,
+    SOLUTION_SCORES_PATH,
+    SOLUTION_FILE_NAMES_PATH,
 )
 from src.train_classifier import train_classifier
 from src.utils.generate_positives_negatives import extract_positives_and_negatives
 from src.utils.helpers import show_image, intersection_over_union
-from src.utils.readers import get_annotations, get_images
+from src.utils.readers import get_annotations
 
 
 def non_maximal_suppression(image_detections, image_scores, image_size):
@@ -60,7 +64,7 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
 
 def run():
     # Initialize the scales that we will use to resize the image
-    SCALES = [1, 0.9, 0.7, 0.5, 0.3, 0.2]
+    SCALES = [1, 0.5, 0.3, 0.2]
 
     # Load the classifier
     model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
@@ -80,8 +84,7 @@ def run():
         print(f"Processing image {i}/{len(validation_images)}...")
         image_scores = []
         image_detections = []
-        # image_name = str(i + 1).zfill(4) + ".jpg"
-        image_name = str(i)
+        image_name = str(i + 1).zfill(4) + ".jpg"
 
         for scale in SCALES:
             if scale * IMAGE_HEIGHT < DIM_HOG_WINDOW:
@@ -153,16 +156,20 @@ if __name__ == "__main__":
     # RUN
     ddetections, sscores, ffile_names = run()
 
-    images = np.load(VALIDATION_NUMPY_PATH)
-    annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    np.save(SOLUTION_DETECTIONS_PATH, ddetections)
+    np.save(SOLUTION_SCORES_PATH, sscores)
+    np.save(SOLUTION_FILE_NAMES_PATH, ffile_names)
 
-    for ffile_name, ddetections in zip(ffile_names, ddetections):
-        image = images[int(ffile_name)]
-        try:
-            cv.rectangle(image, (ddetections[0], ddetections[1]), (ddetections[2], ddetections[3]), (0, 255, 0), 2)
-        except:
-            print(ddetections)
-        show_image(image)
+    # images = np.load(VALIDATION_NUMPY_PATH)
+    # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    #
+    # for ffile_name, ddetections in zip(ffile_names, ddetections):
+    #     image = images[int(ffile_name)]
+    #     try:
+    #         cv.rectangle(image, (ddetections[0], ddetections[1]), (ddetections[2], ddetections[3]), (0, 255, 0), 2)
+    #     except:
+    #         print(ddetections)
+    #     show_image(image)
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
     # val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)

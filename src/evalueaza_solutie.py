@@ -32,7 +32,7 @@ def compute_average_precision(rec, prec):
 def eval_detections(detections, scores, file_names, ground_truth_path):
     ground_truth_file = np.loadtxt(ground_truth_path, dtype="str")
     ground_truth_file_names = np.array(ground_truth_file[:, 0])
-    ground_truth_detections = np.array(ground_truth_file[:, 1:], np.int)
+    ground_truth_detections = np.array(ground_truth_file[:, 1:], np.int32)
 
     num_gt_detections = len(ground_truth_detections)  # numar total de adevarat pozitive
     gt_exists_detection = np.zeros(num_gt_detections)
@@ -182,30 +182,30 @@ def evaluate_results_task2(solution_path, ground_truth_path, character, verbose=
 verbose = 0
 
 # change this on your machine
-solution_path_root = "../fisiere_solutie/331_Alexe_Bogdan/"
-ground_truth_path_root = "../../validare/"
+solution_path_root = "../solution/"
+ground_truth_path_root = "../data/validation/"
 
 
 # task1
 solution_path = solution_path_root + "task1/"
-ground_truth_path = ground_truth_path_root + "task1_gt_validare.txt"
+ground_truth_path = ground_truth_path_root + "task1_gt_validation.txt"
 print(solution_path)
 evaluate_results_task1(solution_path, ground_truth_path, verbose)
 
 # pdb.set_trace()
 
 # task2
-solution_path = solution_path_root + "task2/"
-
-
-ground_truth_path = ground_truth_path_root + "task2_fred_gt_validare.txt"
-evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
-
-ground_truth_path = ground_truth_path_root + "task2_barney_gt_validare.txt"
-evaluate_results_task2(solution_path, ground_truth_path, "barney", verbose)
-
-ground_truth_path = ground_truth_path_root + "task2_betty_gt_validare.txt"
-evaluate_results_task2(solution_path, ground_truth_path, "betty", verbose)
-
-ground_truth_path = ground_truth_path_root + "task2_wilma_gt_validare.txt"
-evaluate_results_task2(solution_path, ground_truth_path, "wilma", verbose)
+# solution_path = solution_path_root + "task2/"
+#
+#
+# ground_truth_path = ground_truth_path_root + "task2_fred_gt_validare.txt"
+# evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
+#
+# ground_truth_path = ground_truth_path_root + "task2_barney_gt_validare.txt"
+# evaluate_results_task2(solution_path, ground_truth_path, "barney", verbose)
+#
+# ground_truth_path = ground_truth_path_root + "task2_betty_gt_validare.txt"
+# evaluate_results_task2(solution_path, ground_truth_path, "betty", verbose)
+#
+# ground_truth_path = ground_truth_path_root + "task2_wilma_gt_validare.txt"
+# evaluate_results_task2(solution_path, ground_truth_path, "wilma", verbose)
