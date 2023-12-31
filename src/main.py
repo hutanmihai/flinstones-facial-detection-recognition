@@ -32,7 +32,6 @@ from src.utils.readers import get_annotations, get_images
 def non_maximal_suppression(image_detections, image_scores, image_size):
     x_out_of_bounds = np.where(image_detections[:, 2] > image_size[1])[0]
     y_out_of_bounds = np.where(image_detections[:, 3] > image_size[0])[0]
-    # print(x_out_of_bounds, y_out_of_bounds)
     image_detections[x_out_of_bounds, 2] = image_size[1]
     image_detections[y_out_of_bounds, 3] = image_size[0]
     sorted_indices = np.flipud(np.argsort(image_scores))
@@ -42,11 +41,9 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
     is_maximal = np.ones(len(image_detections)).astype(bool)
     iou_threshold = 0.3
     for i in range(len(sorted_image_detections) - 1):
-        if is_maximal[i] == True:  # don't change to 'is True' because is a numpy True and is not a python True :)
+        if is_maximal[i] == True:
             for j in range(i + 1, len(sorted_image_detections)):
-                if (
-                    is_maximal[j] == True
-                ):  # don't change to 'is True' because is a numpy True and is not a python True :)
+                if is_maximal[j] == True:
                     if intersection_over_union(sorted_image_detections[i], sorted_image_detections[j]) > iou_threshold:
                         is_maximal[j] = False
                     else:  # verificam daca centrul detectiei este in mijlocul detectiei cu scor mai mare
@@ -61,23 +58,34 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
 
 
 def run():
+    # Initialize the scales that we will use to resize the image
+    SCALES = [1.4, 1.2, 1, 0.9, 0.7, 0.5, 0.3, 0.2]
+
+    # Load the classifier
+    model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
+    weights = model.coef_.T
+    bias = model.intercept_[0]
+
+    # Load the validation images
     validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in np.load(VALIDATION_NUMPY_PATH)]
+
+    # Initialize the detections, scores and file names
     detections = None
     scores = np.array([])
     file_names = np.array([])
-    w = BEST_MODEL.coef_.T
-    bias = BEST_MODEL.intercept_[0]
-    image_names = []
+
     for i, image in enumerate(validation_images):
         start_time = timeit.default_timer()
-        print("Procesam imaginea de testare %d/%d.." % (i, len(validation_images)))
+        print(f"Processing image {i}/{len(validation_images)}...")
         image_scores = []
         image_detections = []
-        count = 1
 
-        while count * IMAGE_HEIGHT > DIM_HOG_WINDOW:
-            image = resize(image, [IMAGE_HEIGHT * count, IMAGE_WIDTH * count])
-            count *= 0.9
+        for scale in SCALES:
+            if scale * IMAGE_HEIGHT < DIM_HOG_WINDOW:
+                break
+
+            # Resize the image
+            image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
 
             hog_descriptors = hog(
                 image,
@@ -94,7 +102,7 @@ def run():
             for y in range(0, NUM_ROWS - NUM_CELL_IN_TEMPLATE):
                 for x in range(0, NUM_COLS - NUM_CELL_IN_TEMPLATE):
                     descr = hog_descriptors[y : y + NUM_CELL_IN_TEMPLATE, x : x + NUM_CELL_IN_TEMPLATE].flatten()
-                    score = np.dot(descr, w)[0] + bias
+                    score = np.dot(descr, weights)[0] + bias
                     if score > THRESHOLD:
                         x_min = int(x * DIM_HOG_CELL)
                         y_min = int(y * DIM_HOG_CELL)
@@ -112,16 +120,9 @@ def run():
             else:
                 detections = np.concatenate((detections, image_detections))
             scores = np.append(scores, image_scores)
-            image_names.append(str(i).zfill(4))
-            file_names = np.append(file_names, image_names)
 
         end_time = timeit.default_timer()
-        print(
-            "Timpul de procesarea al imaginii de testare %d/%d este %f sec."
-            % (i, len(validation_images), end_time - start_time)
-        )
-
-    print(file_names)
+        print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
 
     return detections, scores, file_names
 
@@ -146,7 +147,6 @@ if __name__ == "__main__":
     # train_classifier()
 
     # RUN
-    BEST_MODEL = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
     ddetections, sscores, ffile_names = run()
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
