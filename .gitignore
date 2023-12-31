@@ -16,3 +16,4 @@ data/negatives/
 data/positives/
 data/negatives_validation/
 data/positives_validation/
+models/

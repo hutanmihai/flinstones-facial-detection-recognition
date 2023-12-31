@@ -6,6 +6,9 @@ TRAIN_DATA_PATH = Path("../data/train")
 VALIDATION_DATA_PATH = Path("../data/validation")
 TEST_DATA_PATH = Path("../data/test")
 
+# Model paths
+MODEL_PATH = Path("../models")
+
 # Images paths
 BARNEY_IMAGES_PATH = TRAIN_DATA_PATH / "barney"
 BETTY_IMAGES_PATH = TRAIN_DATA_PATH / "betty"
@@ -76,17 +79,18 @@ COLOR_CHARACTER_MAPPING = {
     "unknown": (0, 0, 255),
 }
 
-PIXELS_PER_CELL = (8, 8)
+# Hog dimensions
+DIM_HOG_CELL = 8
+DIM_HOG_WINDOW = 40
+
+# Hog parameters
+PIXELS_PER_CELL = (DIM_HOG_CELL, DIM_HOG_CELL)
 CELLS_PER_BLOCK = (2, 2)
 ORIENTATIONS = 24
 
-DIM_HOG_CELL = 8
-DIM_HOG_WINDOW = 40
-THRESHOLD = 0.3
+# Detection score threshold
+THRESHOLD = 2.5
 
+# Train, validation and test images dimensions
 IMAGE_WIDTH = 480
 IMAGE_HEIGHT = 360
-
-NUM_COLS = IMAGE_WIDTH // DIM_HOG_CELL - 1
-NUM_ROWS = IMAGE_HEIGHT // DIM_HOG_CELL - 1
-NUM_CELL_IN_TEMPLATE = DIM_HOG_WINDOW // DIM_HOG_CELL - 1
