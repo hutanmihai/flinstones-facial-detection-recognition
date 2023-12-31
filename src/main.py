@@ -25,6 +25,7 @@ from src.constants import (
     COLLAPSED_ANNOTATIONS_PATH,
 )
 from src.train_classifier import train_classifier
+from src.utils.generate_positives_negatives import extract_positives_and_negatives
 from src.utils.helpers import show_image, intersection_over_union
 from src.utils.readers import get_annotations, get_images
 
@@ -59,7 +60,7 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
 
 def run():
     # Initialize the scales that we will use to resize the image
-    SCALES = [1.4, 1.2, 1, 0.9, 0.7, 0.5, 0.3, 0.2]
+    SCALES = [1, 0.9, 0.7, 0.5, 0.3, 0.2]
 
     # Load the classifier
     model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
@@ -79,24 +80,26 @@ def run():
         print(f"Processing image {i}/{len(validation_images)}...")
         image_scores = []
         image_detections = []
+        # image_name = str(i + 1).zfill(4) + ".jpg"
+        image_name = str(i)
 
         for scale in SCALES:
             if scale * IMAGE_HEIGHT < DIM_HOG_WINDOW:
                 break
 
             # Resize the image
-            image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
+            resized_image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
 
             hog_descriptors = hog(
-                image,
+                resized_image,
                 pixels_per_cell=PIXELS_PER_CELL,
                 cells_per_block=CELLS_PER_BLOCK,
                 orientations=ORIENTATIONS,
                 feature_vector=False,
             )
 
-            NUM_COLS = image.shape[1] // DIM_HOG_CELL - 1
-            NUM_ROWS = image.shape[0] // DIM_HOG_CELL - 1
+            NUM_COLS = resized_image.shape[1] // DIM_HOG_CELL - 1
+            NUM_ROWS = resized_image.shape[0] // DIM_HOG_CELL - 1
             NUM_CELL_IN_TEMPLATE = DIM_HOG_WINDOW // DIM_HOG_CELL - 1
 
             for y in range(0, NUM_ROWS - NUM_CELL_IN_TEMPLATE):
@@ -104,10 +107,10 @@ def run():
                     descr = hog_descriptors[y : y + NUM_CELL_IN_TEMPLATE, x : x + NUM_CELL_IN_TEMPLATE].flatten()
                     score = np.dot(descr, weights)[0] + bias
                     if score > THRESHOLD:
-                        x_min = int(x * DIM_HOG_CELL)
-                        y_min = int(y * DIM_HOG_CELL)
-                        x_max = int(x * DIM_HOG_CELL + DIM_HOG_WINDOW)
-                        y_max = int(y * DIM_HOG_CELL + DIM_HOG_WINDOW)
+                        x_min = int(x * DIM_HOG_CELL / scale)
+                        y_min = int(y * DIM_HOG_CELL / scale)
+                        x_max = int((x * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
+                        y_max = int((y * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
                         image_detections.append([x_min, y_min, x_max, y_max])
                         image_scores.append(score)
         if len(image_scores) > 0:
@@ -120,6 +123,7 @@ def run():
             else:
                 detections = np.concatenate((detections, image_detections))
             scores = np.append(scores, image_scores)
+            file_names = np.append(file_names, np.repeat(image_name, len(image_scores)))
 
         end_time = timeit.default_timer()
         print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
@@ -148,6 +152,17 @@ if __name__ == "__main__":
 
     # RUN
     ddetections, sscores, ffile_names = run()
+
+    images = np.load(VALIDATION_NUMPY_PATH)
+    annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+
+    for ffile_name, ddetections in zip(ffile_names, ddetections):
+        image = images[int(ffile_name)]
+        try:
+            cv.rectangle(image, (ddetections[0], ddetections[1]), (ddetections[2], ddetections[3]), (0, 255, 0), 2)
+        except:
+            print(ddetections)
+        show_image(image)
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
     # val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)

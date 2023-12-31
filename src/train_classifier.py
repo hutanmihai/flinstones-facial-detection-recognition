@@ -34,6 +34,7 @@ def get_positive_descriptors():
 
 def get_negatives_descriptors():
     images = get_images(NEGATIVES_GLOB)
+    print(len(images))
     # Convert to grayscale
     images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in images]
     descriptors = []
