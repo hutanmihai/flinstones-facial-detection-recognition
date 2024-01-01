@@ -56,7 +56,7 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
 
 def run():
     # Initialize the scales that we will use to resize the image
-    SCALES = [1, 0.5, 0.3, 0.2]
+    SCALES = [0.5, 0.4, 0.3, 0.2]
 
     # Load the classifier
     model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
