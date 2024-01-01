@@ -1,17 +1,14 @@
-import os
 import pickle
 import timeit
 
 import cv2 as cv
 import numpy as np
 from skimage.feature import hog
-import matplotlib.pyplot as plt
 from skimage.transform import resize
 
 from src.constants import (
     VALIDATION_ANNOTATIONS_PATH,
     VALIDATION_NUMPY_PATH,
-    VALIDATION_DATA_PATH,
     PIXELS_PER_CELL,
     CELLS_PER_BLOCK,
     ORIENTATIONS,
@@ -21,15 +18,10 @@ from src.constants import (
     MODEL_PATH,
     IMAGE_HEIGHT,
     IMAGE_WIDTH,
-    COLLAPSED_NUMPY_PATH,
-    COLLAPSED_ANNOTATIONS_PATH,
-    SOLUTION_PATH,
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
 )
-from src.train_classifier import train_classifier
-from src.utils.generate_positives_negatives import extract_positives_and_negatives
 from src.utils.helpers import show_image, intersection_over_union
 from src.utils.readers import get_annotations
 
@@ -150,9 +142,6 @@ if __name__ == "__main__":
     # extract_positives_and_negatives(train_images, annotations)
     # extract_positives_and_negatives_validation(validation_images, validation_annotations)
 
-    # Train the classifier
-    # train_classifier()
-
     # RUN
     ddetections, sscores, ffile_names = run()
 
@@ -160,26 +149,26 @@ if __name__ == "__main__":
     np.save(SOLUTION_SCORES_PATH, sscores)
     np.save(SOLUTION_FILE_NAMES_PATH, ffile_names)
 
-    images = np.load(VALIDATION_NUMPY_PATH)
-    annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
-
-    for ffile_name, ddetection, score in zip(ffile_names, ddetections, sscores):
-        ffile_name = ffile_name.split(".")[0]
-        image = images[int(ffile_name)]
-        try:
-            cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
-            cv.putText(
-                image,
-                "score:" + str(score)[:4],
-                (ddetection[0], ddetection[1]),
-                cv.FONT_HERSHEY_SIMPLEX,
-                0.5,
-                (0, 255, 0),
-                1,
-            )
-        except:
-            print(ddetections)
-        show_image(image)
+    # images = np.load(VALIDATION_NUMPY_PATH)
+    # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    #
+    # for ffile_name, ddetection, score in zip(ffile_names, ddetections, sscores):
+    #     ffile_name = ffile_name.split(".")[0]
+    #     image = images[int(ffile_name)]
+    #     try:
+    #         cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
+    #         cv.putText(
+    #             image,
+    #             "score:" + str(score)[:4],
+    #             (ddetection[0], ddetection[1]),
+    #             cv.FONT_HERSHEY_SIMPLEX,
+    #             0.5,
+    #             (0, 255, 0),
+    #             1,
+    #         )
+    #     except:
+    #         print(ddetections)
+    #     show_image(image)
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
     # val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)

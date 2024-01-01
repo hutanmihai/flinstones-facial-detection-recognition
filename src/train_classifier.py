@@ -34,7 +34,6 @@ def get_positive_descriptors():
 
 def get_negatives_descriptors():
     images = get_images(NEGATIVES_GLOB)
-    print(len(images))
     # Convert to grayscale
     images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in images]
     descriptors = []
@@ -63,5 +62,18 @@ def train_classifier():
     # Visualize how are the scores distributed for positive and negative examples
     positive_scores = scores[train_labels > 0]
     negative_scores = scores[train_labels <= 0]
-    print(f"Positive scores: {positive_scores}")
-    print(f"Negative scores: {negative_scores}")
+    import matplotlib.pyplot as plt
+
+    plt.figure(figsize=(8, 6))
+    plt.hist(positive_scores, bins=50, alpha=0.5, label="Positive Scores", color="blue")
+    plt.hist(negative_scores, bins=50, alpha=0.5, label="Negative Scores", color="red")
+    plt.xlabel("Scores")
+    plt.ylabel("Frequency")
+    plt.title("Distribution of Scores for Positive and Negative Examples")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+if __name__ == "__main__":
+    train_classifier()

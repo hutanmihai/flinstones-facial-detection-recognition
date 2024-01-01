@@ -84,16 +84,16 @@ COLOR_CHARACTER_MAPPING = {
 }
 
 # Hog dimensions
-DIM_HOG_CELL = 8
+DIM_HOG_CELL = 3
 DIM_HOG_WINDOW = 40
 
 # Hog parameters
 PIXELS_PER_CELL = (DIM_HOG_CELL, DIM_HOG_CELL)
 CELLS_PER_BLOCK = (2, 2)
-ORIENTATIONS = 24
+ORIENTATIONS = 20
 
 # Detection score threshold
-THRESHOLD = 3
+THRESHOLD = 4
 
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480

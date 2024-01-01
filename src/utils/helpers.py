@@ -39,10 +39,7 @@ def intersection_over_union(bbox_a, bbox_b):
     box_a_area = (bbox_a[2] - bbox_a[0] + 1) * (bbox_a[3] - bbox_a[1] + 1)
     box_b_area = (bbox_b[2] - bbox_b[0] + 1) * (bbox_b[3] - bbox_b[1] + 1)
 
-    try:
-        iou = inter_area / float(box_a_area + box_b_area - inter_area)
-    except ZeroDivisionError:
-        iou = 0
+    iou = inter_area / float(box_a_area + box_b_area - inter_area)
 
     return iou
 
