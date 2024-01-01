@@ -160,16 +160,26 @@ if __name__ == "__main__":
     np.save(SOLUTION_SCORES_PATH, sscores)
     np.save(SOLUTION_FILE_NAMES_PATH, ffile_names)
 
-    # images = np.load(VALIDATION_NUMPY_PATH)
-    # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
-    #
-    # for ffile_name, ddetections in zip(ffile_names, ddetections):
-    #     image = images[int(ffile_name)]
-    #     try:
-    #         cv.rectangle(image, (ddetections[0], ddetections[1]), (ddetections[2], ddetections[3]), (0, 255, 0), 2)
-    #     except:
-    #         print(ddetections)
-    #     show_image(image)
+    images = np.load(VALIDATION_NUMPY_PATH)
+    annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+
+    for ffile_name, ddetection, score in zip(ffile_names, ddetections, sscores):
+        ffile_name = ffile_name.split(".")[0]
+        image = images[int(ffile_name)]
+        try:
+            cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
+            cv.putText(
+                image,
+                "score:" + str(score)[:4],
+                (ddetection[0], ddetection[1]),
+                cv.FONT_HERSHEY_SIMPLEX,
+                0.5,
+                (0, 255, 0),
+                1,
+            )
+        except:
+            print(ddetections)
+        show_image(image)
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
     # val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)
