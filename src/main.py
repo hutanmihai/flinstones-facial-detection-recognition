@@ -152,22 +152,23 @@ if __name__ == "__main__":
     # images = np.load(VALIDATION_NUMPY_PATH)
     # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
     #
+    # for k, v in annotations.items():
+    #     for bbox, _ in v:
+    #         cv.rectangle(images[int(k.split(".")[0])], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2)
+    #
     # for ffile_name, ddetection, score in zip(ffile_names, ddetections, sscores):
     #     ffile_name = ffile_name.split(".")[0]
     #     image = images[int(ffile_name)]
-    #     try:
-    #         cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
-    #         cv.putText(
-    #             image,
-    #             "score:" + str(score)[:4],
-    #             (ddetection[0], ddetection[1]),
-    #             cv.FONT_HERSHEY_SIMPLEX,
-    #             0.5,
-    #             (0, 255, 0),
-    #             1,
-    #         )
-    #     except:
-    #         print(ddetections)
+    #     cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
+    #     cv.putText(
+    #         image,
+    #         "score:" + str(score)[:4],
+    #         (ddetection[0], ddetection[1]),
+    #         cv.FONT_HERSHEY_SIMPLEX,
+    #         0.5,
+    #         (0, 255, 0),
+    #         1,
+    #     )
     #     show_image(image)
 
     # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
