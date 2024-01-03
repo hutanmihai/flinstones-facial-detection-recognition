@@ -3,8 +3,10 @@ import timeit
 
 import cv2 as cv
 import numpy as np
+import torch
 from skimage.feature import hog
 from skimage.transform import resize
+from torchvision.transforms import transforms
 
 from src.constants import (
     VALIDATION_ANNOTATIONS_PATH,
@@ -21,6 +23,13 @@ from src.constants import (
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
+    COLLAPSED_NUMPY_PATH,
+    COLLAPSED_ANNOTATIONS_PATH,
+)
+from src.utils.collapse import save_train_images_numpy, save_validation_images_numpy, collapse
+from src.utils.generate_positives_negatives import (
+    extract_positives_and_negatives,
+    extract_positives_and_negatives_validation,
 )
 from src.utils.helpers import show_image, intersection_over_union
 from src.utils.readers import get_annotations
@@ -55,16 +64,16 @@ def non_maximal_suppression(image_detections, image_scores, image_size):
 
 
 def run():
-    # Initialize the scales that we will use to resize the image
-    SCALES = [0.5, 0.4, 0.3, 0.2]
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = torch.load(MODEL_PATH / "model.pth")
+    model.to(device)
+    model.eval()
 
-    # Load the classifier
-    model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
-    weights = model.coef_.T
-    bias = model.intercept_[0]
+    # Initialize the scales that we will use to resize the image
+    SCALES = [0.8, 0.4, 0.2]
 
     # Load the validation images
-    validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in np.load(VALIDATION_NUMPY_PATH)]
+    validation_images = np.load(VALIDATION_NUMPY_PATH)
 
     # Initialize the detections, scores and file names
     detections = None
@@ -85,29 +94,26 @@ def run():
             # Resize the image
             resized_image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
 
-            hog_descriptors = hog(
-                resized_image,
-                pixels_per_cell=PIXELS_PER_CELL,
-                cells_per_block=CELLS_PER_BLOCK,
-                orientations=ORIENTATIONS,
-                feature_vector=False,
-            )
+            NUM_COLS = resized_image.shape[1] - DIM_HOG_WINDOW - 1
+            NUM_ROWS = resized_image.shape[0] - DIM_HOG_WINDOW - 1
 
-            NUM_COLS = resized_image.shape[1] // DIM_HOG_CELL - 1
-            NUM_ROWS = resized_image.shape[0] // DIM_HOG_CELL - 1
-            NUM_CELL_IN_TEMPLATE = DIM_HOG_WINDOW // DIM_HOG_CELL - 1
+            for y in range(0, NUM_ROWS, 2):
+                for x in range(0, NUM_COLS, 2):
+                    resized_patch = resized_image[y : y + DIM_HOG_WINDOW, x : x + DIM_HOG_WINDOW]
+                    window_tensor = transforms.ToTensor()(resized_patch).unsqueeze(0).to(device)
+                    window_tensor = window_tensor.to(torch.float32)
+                    with torch.no_grad():
+                        pred = model(window_tensor)
+                        score = pred[0][1].item()
 
-            for y in range(0, NUM_ROWS - NUM_CELL_IN_TEMPLATE):
-                for x in range(0, NUM_COLS - NUM_CELL_IN_TEMPLATE):
-                    descr = hog_descriptors[y : y + NUM_CELL_IN_TEMPLATE, x : x + NUM_CELL_IN_TEMPLATE].flatten()
-                    score = np.dot(descr, weights)[0] + bias
                     if score > THRESHOLD:
-                        x_min = int(x * DIM_HOG_CELL / scale)
-                        y_min = int(y * DIM_HOG_CELL / scale)
-                        x_max = int((x * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
-                        y_max = int((y * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
+                        x_min = int(x / scale)
+                        y_min = int(y / scale)
+                        x_max = int((x + DIM_HOG_WINDOW) / scale)
+                        y_max = int((y + DIM_HOG_WINDOW) / scale)
                         image_detections.append([x_min, y_min, x_max, y_max])
                         image_scores.append(score)
+
         if len(image_scores) > 0:
             image_detections, image_scores = non_maximal_suppression(
                 np.array(image_detections), np.array(image_scores), image.shape
@@ -148,6 +154,10 @@ if __name__ == "__main__":
     np.save(SOLUTION_DETECTIONS_PATH, ddetections)
     np.save(SOLUTION_SCORES_PATH, sscores)
     np.save(SOLUTION_FILE_NAMES_PATH, ffile_names)
+
+    # ddetections = np.load(SOLUTION_DETECTIONS_PATH)
+    # sscores = np.load(SOLUTION_SCORES_PATH)
+    # ffile_names = np.load(SOLUTION_FILE_NAMES_PATH)
 
     # images = np.load(VALIDATION_NUMPY_PATH)
     # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)

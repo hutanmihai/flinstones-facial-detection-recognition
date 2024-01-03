@@ -55,11 +55,13 @@ TRAIN_ANNOTATIONS_PATH = (
 VALIDATION_ANNOTATIONS_PATH = VALIDATION_DATA_PATH / "validations_annotations.txt"
 
 # Positives and negatives paths
-POSITIVES_PATH = Path("../data/positives")
-NEGATIVES_PATH = Path("../data/negatives")
+CNN_TRAIN_IMAGES_PATH = Path("../data/train_images")
+POSITIVES_PATH = Path("../data/train_images/positives")
+NEGATIVES_PATH = Path("../data/train_images/negatives")
 
-POSITIVES_VALIDATION_PATH = Path("../data/positives_validation")
-NEGATIVES_VALIDATION_PATH = Path("../data/negatives_validation")
+CNN_VALIDATION_IMAGES_PATH = Path("../data/validation_images")
+POSITIVES_VALIDATION_PATH = Path("../data/validation_images/positives")
+NEGATIVES_VALIDATION_PATH = Path("../data/validation_images/negatives")
 
 # Positives and negatives globs
 POSITIVES_GLOB = sorted(glob(str(POSITIVES_PATH / "*.jpg")))
@@ -93,7 +95,7 @@ CELLS_PER_BLOCK = (2, 2)
 ORIENTATIONS = 20
 
 # Detection score threshold
-THRESHOLD = 4
+THRESHOLD = 0.75
 
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480

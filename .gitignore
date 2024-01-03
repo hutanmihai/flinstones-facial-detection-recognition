@@ -18,4 +18,6 @@ data/negatives_validation/
 data/positives_validation/
 models/
 solution/
+data/train_images/
+data/validation_images/
 

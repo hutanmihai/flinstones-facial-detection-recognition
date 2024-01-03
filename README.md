@@ -29,6 +29,7 @@ pip install jupyter==1.0.0
 pip install numpy==1.26.2
 pip install opencv-python==4.8.1
 pip install scikit-learn==1.3.2
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 ```
 
 ### Install required libraries using pip
@@ -38,7 +39,7 @@ Make sure you have python 3.11.5 installed on your system and you are using it.
 ```bash
 pip install jupyter==1.0.0
 pip install numpy==1.26.2
-pip install opencv-python==4.8.1
+pip install opencv-python==4.8.1.78
 pip install scikit-learn==1.3.2
 ```
 
