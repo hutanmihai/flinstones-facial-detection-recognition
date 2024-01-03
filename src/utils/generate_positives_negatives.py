@@ -36,6 +36,9 @@ def extract_positives(
             box = cv.resize(image[ymin:ymax, xmin:xmax], (DIM_HOG_WINDOW, DIM_HOG_WINDOW))
             cv.imwrite(f"{path}/{str(image_index).zfill(4)}_{counter}.jpg", box)
             counter += 1
+            flipped_box = cv.flip(box, 1)
+            cv.imwrite(f"{path}/{str(image_index).zfill(4)}_{counter}.jpg", flipped_box)
+            counter += 1
 
 
 def extract_negatives(
@@ -47,7 +50,7 @@ def extract_negatives(
         image: np.ndarray = images[int(image_index)]
         coordinates = [coord for coord, _ in annotations[image_index]]
 
-        while counter < len(coordinates) * 5:
+        while counter < len(coordinates) * 2:
             x = randint(0, IMAGE_WIDTH - DIM_HOG_WINDOW)
             y = randint(0, IMAGE_HEIGHT - DIM_HOG_WINDOW)
             box = (x, y, x + DIM_HOG_WINDOW, y + DIM_HOG_WINDOW)
