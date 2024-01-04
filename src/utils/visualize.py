@@ -37,8 +37,8 @@ def visualize_images_with_boxes_and_detections():
             cv.rectangle(images[int(k.split(".")[0])], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2)
 
     for file_name, detection, score in zip(file_names, detections, scores):
-        file_name = file_name.split(".")[0]
-        image = images[int(file_name)]
+        file_name = file_name
+        image = cv.imread(f"../data/validation/images/{file_name}")
         cv.rectangle(image, (detection[0], detection[1]), (detection[2], detection[3]), (0, 255, 0), 2)
         cv.putText(
             image,

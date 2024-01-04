@@ -12,8 +12,13 @@ from src.constants import (
     DIM_HOG_WINDOW,
     IMAGE_WIDTH,
     IMAGE_HEIGHT,
+    COLLAPSED_NUMPY_PATH,
+    COLLAPSED_ANNOTATIONS_PATH,
+    VALIDATION_NUMPY_PATH,
+    VALIDATION_ANNOTATIONS_PATH,
 )
 from src.utils.helpers import check_if_dirs_exist
+from src.utils.readers import get_annotations
 
 
 def check_overlap(box, coordinates):
@@ -50,7 +55,7 @@ def extract_negatives(
         image: np.ndarray = images[int(image_index)]
         coordinates = [coord for coord, _ in annotations[image_index]]
 
-        while counter < len(coordinates) * 2:
+        while counter < len(coordinates) * 10:
             x = randint(0, IMAGE_WIDTH - DIM_HOG_WINDOW)
             y = randint(0, IMAGE_HEIGHT - DIM_HOG_WINDOW)
             box = (x, y, x + DIM_HOG_WINDOW, y + DIM_HOG_WINDOW)
@@ -76,3 +81,12 @@ def extract_positives_and_negatives_validation(
     check_if_dirs_exist([POSITIVES_VALIDATION_PATH, NEGATIVES_VALIDATION_PATH])
     extract_positives(images, annotations, POSITIVES_VALIDATION_PATH)
     extract_negatives(images, annotations, NEGATIVES_VALIDATION_PATH)
+
+
+def extract_cnn_images():
+    train_images = np.load(COLLAPSED_NUMPY_PATH)
+    annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
+    validation_images = np.load(VALIDATION_NUMPY_PATH)
+    validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    extract_positives_and_negatives(train_images, annotations)
+    extract_positives_and_negatives_validation(validation_images, validation_annotations)

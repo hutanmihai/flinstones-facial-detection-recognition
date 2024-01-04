@@ -20,14 +20,6 @@ def get_positive_descriptors():
         )
         descriptors.append(features)
 
-        features = hog(
-            np.fliplr(image),
-            pixels_per_cell=PIXELS_PER_CELL,
-            cells_per_block=CELLS_PER_BLOCK,
-            orientations=ORIENTATIONS,
-        )
-        descriptors.append(features)
-
     descriptors = np.array(descriptors)
     return descriptors
 
