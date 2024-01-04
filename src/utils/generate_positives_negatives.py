@@ -18,27 +18,39 @@ from src.constants import (
     VALIDATION_IMAGES_PATH,
     COLLAPSED_IMAGES_PATH,
 )
-from src.utils.helpers import check_if_dirs_exist
+from src.utils.helpers import check_if_dirs_exist, show_image
 from src.utils.readers import get_annotations, get_images
 
 
-def check_overlap(box, coordinates):
+def check_intersect(box, coordinates):
     xmin, ymin, xmax, ymax = box
-    for coord in coordinates:
-        cxmin, cymin, cxmax, cymax = coord
-        if not (xmax < cxmin or xmin > cxmax or ymax < cymin or ymin > cymax):
-            return False
-    return True
+    for coordinate in coordinates:
+        xmin2, ymin2, xmax2, ymax2 = coordinate
+        if (xmin <= xmax2 and xmax >= xmin2) and (ymin <= ymax2 and ymax >= ymin2):
+            return True
+    return False
+
+
+def area(box):
+    xmin, ymin, xmax, ymax = box
+    return (xmax - xmin) * (ymax - ymin)
 
 
 def extract_positives(
-    images: list[np.ndarray], annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]], path: Path
+    images: list[np.ndarray],
+    annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]],
+    path: Path,
+    for_training: bool = True,
 ) -> None:
     for image_name in annotations.keys():
         counter = 0
         image: np.ndarray = images[int(image_name.split(".")[0]) - 1]
         for coordinates, character in annotations[image_name]:
             xmin, ymin, xmax, ymax = coordinates
+            if for_training and area((xmin, ymin, xmax, ymax)) < 400:
+                # show_image(image[ymin:ymax, xmin:xmax])
+                continue
+
             box = cv.resize(image[ymin:ymax, xmin:xmax], (WINDOW_SIZE, WINDOW_SIZE))
             cv.imwrite(f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg", box)
             counter += 1
@@ -60,7 +72,7 @@ def extract_negatives(
             x = randint(0, IMAGE_WIDTH - WINDOW_SIZE)
             y = randint(0, IMAGE_HEIGHT - WINDOW_SIZE)
             box = (x, y, x + WINDOW_SIZE, y + WINDOW_SIZE)
-            if check_overlap(box, coordinates):
+            if not check_intersect(box, coordinates):
                 cv.imwrite(
                     f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg".zfill(5),
                     image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE],
@@ -80,7 +92,7 @@ def extract_positives_and_negatives_validation(
     images: list[np.ndarray], annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]]
 ) -> None:
     check_if_dirs_exist([POSITIVES_VALIDATION_PATH, NEGATIVES_VALIDATION_PATH])
-    extract_positives(images, annotations, POSITIVES_VALIDATION_PATH)
+    extract_positives(images, annotations, POSITIVES_VALIDATION_PATH, for_training=False)
     extract_negatives(images, annotations, NEGATIVES_VALIDATION_PATH)
 
 
