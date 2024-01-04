@@ -22,4 +22,4 @@ if __name__ == "__main__":
     train_hog_classifier()
     run_task1_hog()
 
-    visualize_images_with_boxes_and_detections(VALIDATION_ANNOTATIONS_PATH)
+    # visualize_images_with_boxes_and_detections(VALIDATION_ANNOTATIONS_PATH)

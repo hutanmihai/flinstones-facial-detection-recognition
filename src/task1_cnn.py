@@ -7,7 +7,7 @@ from torchvision.transforms import transforms
 
 from src.constants import (
     THRESHOLD,
-    DIM_HOG_WINDOW,
+    WINDOW_SIZE,
     MODEL_PATH,
     IMAGE_HEIGHT,
     IMAGE_WIDTH,
@@ -46,18 +46,18 @@ def run_task1_cnn():
         image_name = str(i + 1).zfill(4) + ".jpg"
 
         for scale in SCALES:
-            if scale * IMAGE_HEIGHT < DIM_HOG_WINDOW:
+            if scale * IMAGE_HEIGHT < WINDOW_SIZE:
                 break
 
             # Resize the image
             resized_image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
 
-            NUM_COLS = resized_image.shape[1] - DIM_HOG_WINDOW - 1
-            NUM_ROWS = resized_image.shape[0] - DIM_HOG_WINDOW - 1
+            NUM_COLS = resized_image.shape[1] - WINDOW_SIZE - 1
+            NUM_ROWS = resized_image.shape[0] - WINDOW_SIZE - 1
 
             for y in range(0, NUM_ROWS, 2):
                 for x in range(0, NUM_COLS, 2):
-                    resized_patch = resized_image[y : y + DIM_HOG_WINDOW, x : x + DIM_HOG_WINDOW]
+                    resized_patch = resized_image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE]
                     window_tensor = transforms.ToTensor()(resized_patch).unsqueeze(0).to(device)
                     window_tensor = window_tensor.to(torch.float32)
                     with torch.no_grad():
@@ -67,8 +67,8 @@ def run_task1_cnn():
                     if score > THRESHOLD:
                         x_min = int(x / scale)
                         y_min = int(y / scale)
-                        x_max = int((x + DIM_HOG_WINDOW) / scale)
-                        y_max = int((y + DIM_HOG_WINDOW) / scale)
+                        x_max = int((x + WINDOW_SIZE) / scale)
+                        y_max = int((y + WINDOW_SIZE) / scale)
                         image_detections.append([x_min, y_min, x_max, y_max])
                         image_scores.append(score)
 

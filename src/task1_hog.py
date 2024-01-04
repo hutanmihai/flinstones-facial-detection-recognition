@@ -11,7 +11,7 @@ from src.constants import (
     CELLS_PER_BLOCK,
     ORIENTATIONS,
     DIM_HOG_CELL,
-    DIM_HOG_WINDOW,
+    WINDOW_SIZE,
     MODEL_PATH,
     IMAGE_HEIGHT,
     IMAGE_WIDTH,
@@ -44,13 +44,13 @@ def run_task1_hog():
 
     for i, image in enumerate(validation_images):
         start_time = timeit.default_timer()
-        print(f"Processing image {i}/{len(validation_images)}...")
+        print(f"Processing image {i + 1}/{len(validation_images)}...")
         image_scores = []
         image_detections = []
         image_name = str(i + 1).zfill(4) + ".jpg"
 
         for scale in SCALES:
-            if scale * IMAGE_HEIGHT < DIM_HOG_WINDOW:
+            if scale * IMAGE_HEIGHT < WINDOW_SIZE:
                 break
 
             # Resize the image
@@ -66,7 +66,7 @@ def run_task1_hog():
 
             NUM_COLS = resized_image.shape[1] // DIM_HOG_CELL - 1
             NUM_ROWS = resized_image.shape[0] // DIM_HOG_CELL - 1
-            NUM_CELL_IN_TEMPLATE = DIM_HOG_WINDOW // DIM_HOG_CELL - 1
+            NUM_CELL_IN_TEMPLATE = WINDOW_SIZE // DIM_HOG_CELL - 1
 
             for y in range(0, NUM_ROWS - NUM_CELL_IN_TEMPLATE):
                 for x in range(0, NUM_COLS - NUM_CELL_IN_TEMPLATE):
@@ -75,8 +75,8 @@ def run_task1_hog():
                     if score > 1:
                         x_min = int(x * DIM_HOG_CELL / scale)
                         y_min = int(y * DIM_HOG_CELL / scale)
-                        x_max = int((x * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
-                        y_max = int((y * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
+                        x_max = int((x * DIM_HOG_CELL + WINDOW_SIZE) / scale)
+                        y_max = int((y * DIM_HOG_CELL + WINDOW_SIZE) / scale)
                         image_detections.append([x_min, y_min, x_max, y_max])
                         image_scores.append(score)
         if len(image_scores) > 0:
@@ -101,4 +101,4 @@ def run_task1_hog():
         SOLUTION_FILE_NAMES_PATH,
     )
 
-    print(f"Total time: {timeit.default_timer() - big_start_time} seconds.")
+    print(f"Total time: {timeit.default_timer() - big_start_time} seconds.\n")

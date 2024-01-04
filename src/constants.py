@@ -1,9 +1,8 @@
-from glob import glob
 from pathlib import Path
 
 # Hog dimensions
 DIM_HOG_CELL = 3
-DIM_HOG_WINDOW = 40
+WINDOW_SIZE = 40
 
 # Hog parameters
 PIXELS_PER_CELL = (DIM_HOG_CELL, DIM_HOG_CELL)

@@ -10,7 +10,7 @@ from src.constants import (
     NEGATIVES_VALIDATION_PATH,
     POSITIVES_PATH,
     POSITIVES_VALIDATION_PATH,
-    DIM_HOG_WINDOW,
+    WINDOW_SIZE,
     IMAGE_WIDTH,
     IMAGE_HEIGHT,
     COLLAPSED_ANNOTATIONS_PATH,
@@ -39,7 +39,7 @@ def extract_positives(
         image: np.ndarray = images[int(image_name.split(".")[0]) - 1]
         for coordinates, character in annotations[image_name]:
             xmin, ymin, xmax, ymax = coordinates
-            box = cv.resize(image[ymin:ymax, xmin:xmax], (DIM_HOG_WINDOW, DIM_HOG_WINDOW))
+            box = cv.resize(image[ymin:ymax, xmin:xmax], (WINDOW_SIZE, WINDOW_SIZE))
             cv.imwrite(f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg", box)
             counter += 1
             flipped_box = cv.flip(box, 1)
@@ -57,13 +57,13 @@ def extract_negatives(
         coordinates = [coord for coord, _ in annotations[image_name]]
 
         while counter < len(coordinates) * 2:
-            x = randint(0, IMAGE_WIDTH - DIM_HOG_WINDOW)
-            y = randint(0, IMAGE_HEIGHT - DIM_HOG_WINDOW)
-            box = (x, y, x + DIM_HOG_WINDOW, y + DIM_HOG_WINDOW)
+            x = randint(0, IMAGE_WIDTH - WINDOW_SIZE)
+            y = randint(0, IMAGE_HEIGHT - WINDOW_SIZE)
+            box = (x, y, x + WINDOW_SIZE, y + WINDOW_SIZE)
             if check_overlap(box, coordinates):
                 cv.imwrite(
                     f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg".zfill(5),
-                    image[y : y + DIM_HOG_WINDOW, x : x + DIM_HOG_WINDOW],
+                    image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE],
                 )
                 counter += 1
 
