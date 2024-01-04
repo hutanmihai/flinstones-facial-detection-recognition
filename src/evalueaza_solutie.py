@@ -81,7 +81,7 @@ def eval_detections(detections, scores, file_names, ground_truth_path):
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title("All faces: average precision %.3f" % average_precision)
-    plt.savefig("precizie_medie_all_faces.png")
+    # plt.savefig("precizie_medie_all_faces.png")
     plt.show()
 
 

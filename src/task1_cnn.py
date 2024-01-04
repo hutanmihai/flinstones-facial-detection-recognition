@@ -89,7 +89,7 @@ def run_task1_cnn():
             file_names = np.append(file_names, np.repeat(image_name, len(image_scores)))
 
         end_time = timeit.default_timer()
-        print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
+        print(f"Process time for {i + 1}/{len(validation_images)} was {end_time - start_time} seconds.")
 
     write_solution(
         detections,

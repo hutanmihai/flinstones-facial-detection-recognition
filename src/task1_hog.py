@@ -72,7 +72,7 @@ def run_task1_hog():
                 for x in range(0, NUM_COLS - NUM_CELL_IN_TEMPLATE):
                     descr = hog_descriptors[y : y + NUM_CELL_IN_TEMPLATE, x : x + NUM_CELL_IN_TEMPLATE].flatten()
                     score = np.dot(descr, weights)[0] + bias
-                    if score > 1:
+                    if score >= 2.5:
                         x_min = int(x * DIM_HOG_CELL / scale)
                         y_min = int(y * DIM_HOG_CELL / scale)
                         x_max = int((x * DIM_HOG_CELL + WINDOW_SIZE) / scale)
@@ -90,7 +90,7 @@ def run_task1_hog():
             file_names = np.append(file_names, np.repeat(image_name, len(image_scores)))
 
         end_time = timeit.default_timer()
-        print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
+        print(f"Process time for {i + 1}/{len(validation_images)} was {end_time - start_time} seconds.")
 
     write_solution(
         detections,
