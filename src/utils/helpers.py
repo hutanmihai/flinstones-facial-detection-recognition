@@ -4,7 +4,7 @@ from pathlib import Path
 import cv2 as cv
 import numpy as np
 
-from src.constants import SOLUTION_PATH, SOLUTION_TASK1_PATH, SOLUTION_TASK2_PATH
+from src.constants import SOLUTION_PATH, SOLUTION_TASK1_PATH, SOLUTION_TASK2_PATH, IOU_THRESHOLD
 
 
 ########################################################################################################################
@@ -78,12 +78,11 @@ def non_maximal_suppression(image_detections, image_scores):
     sorted_scores = image_scores[sorted_indices]
 
     is_maximal = np.ones(len(image_detections)).astype(bool)
-    iou_threshold = 0.3
     for i in range(len(sorted_image_detections) - 1):
         if is_maximal[i]:
             for j in range(i + 1, len(sorted_image_detections)):
                 if is_maximal[j]:
-                    if intersection_over_union(sorted_image_detections[i], sorted_image_detections[j]) > iou_threshold:
+                    if intersection_over_union(sorted_image_detections[i], sorted_image_detections[j]) > IOU_THRESHOLD:
                         is_maximal[j] = False
                     elif (  # verificam daca detectia este complet in interiorul detectiei cu scor mai mare
                         sorted_image_detections[i][0] <= sorted_image_detections[j][0]

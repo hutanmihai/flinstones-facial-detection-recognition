@@ -117,3 +117,7 @@ def test_classifier():
 def train_hog_classifier():
     train_classifier()
     test_classifier()
+
+
+if __name__ == "__main__":
+    train_hog_classifier()

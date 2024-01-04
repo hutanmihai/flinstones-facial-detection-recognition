@@ -11,6 +11,8 @@ ORIENTATIONS = 20
 
 # Detection score threshold
 THRESHOLD = 0.5
+# Intersection over union threshold
+IOU_THRESHOLD = 0.1
 
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480
