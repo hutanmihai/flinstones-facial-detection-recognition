@@ -20,14 +20,12 @@ from src.constants import (
     SOLUTION_FILE_NAMES_PATH,
     VALIDATION_IMAGES_PATH,
 )
-from src.utils.collapse import collapse
-from src.utils.generate_positives_negatives import extract_train_patches, extract_train_and_validation_patches
-from src.utils.helpers import show_image, intersection_over_union, non_maximal_suppression, write_solution
-from src.utils.readers import get_annotations, get_images
-from src.utils.visualize import visualize_images_with_boxes_and_detections, visualize_images_with_boxes
+from src.utils.helpers import non_maximal_suppression, write_solution
+from src.utils.readers import get_images
 
 
 def run_task1_hog():
+    big_start_time = timeit.default_timer()
     # Initialize the scales that we will use to resize the image
     SCALES = [0.5, 0.4, 0.3, 0.2]
 
@@ -102,3 +100,5 @@ def run_task1_hog():
         file_names,
         SOLUTION_FILE_NAMES_PATH,
     )
+
+    print(f"Total time: {timeit.default_timer() - big_start_time} seconds.")

@@ -1,3 +1,5 @@
+import timeit
+
 from src.constants import (
     COLLAPSED_ANNOTATIONS_PATH,
     TRAIN_IMAGES_PATHS,
@@ -11,10 +13,10 @@ import cv2 as cv
 
 
 def collapse():
+    start_time = timeit.default_timer()
     check_if_dirs_exist([TRAIN_DATA_PATH, COLLAPSED_IMAGES_PATH])
     zipped_paths = zip(TRAIN_ANNOTATIONS_PATHS, TRAIN_IMAGES_PATHS)
-    print("Collapsing images...")
-    print("Collapsing annotations...")
+    print("Collapsing images and annotations...")
     with open(COLLAPSED_ANNOTATIONS_PATH, "w") as f:
         for i, (annotation_path, images_path) in enumerate(zipped_paths):
             annotations = get_annotations(annotation_path)
@@ -34,3 +36,4 @@ def collapse():
                     f.write(f"{image_name} {box[0]} {box[1]} {box[2]} {box[3]} {character}\n")
     print("-" * 50)
     print("Successfully collapsed images and annotations!")
+    print(f"Collapsing took {timeit.default_timer() - start_time} seconds.\n")

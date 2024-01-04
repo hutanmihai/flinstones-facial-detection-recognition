@@ -1,3 +1,4 @@
+import timeit
 from pathlib import Path
 from random import randint
 
@@ -85,6 +86,7 @@ def extract_positives_and_negatives_validation(
 
 def extract_train_and_validation_patches():
     print("Extracting positives and negatives for training and validation...")
+    start_time = timeit.default_timer()
     train_images = get_images(COLLAPSED_IMAGES_PATH)
     annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
     validation_images = get_images(VALIDATION_IMAGES_PATH)
@@ -93,3 +95,4 @@ def extract_train_and_validation_patches():
     extract_positives_and_negatives_validation(validation_images, validation_annotations)
     print("-" * 50)
     print("Successfully extracted positives and negatives for training and validation!")
+    print(f"Extraction took {timeit.default_timer() - start_time} seconds.\n")

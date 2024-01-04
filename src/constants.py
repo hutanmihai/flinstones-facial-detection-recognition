@@ -73,13 +73,6 @@ VALIDATION_PATCHES_PATH = Path("../data/validation_images")
 POSITIVES_VALIDATION_PATH = Path("../data/validation_images/positives")
 NEGATIVES_VALIDATION_PATH = Path("../data/validation_images/negatives")
 
-# Positives and negatives globs
-POSITIVES_GLOB = sorted(glob(str(POSITIVES_PATH / "*.jpg")))
-NEGATIVES_GLOB = sorted(glob(str(NEGATIVES_PATH / "*.jpg")))
-
-POSITIVES_VALIDATION_GLOB = sorted(glob(str(POSITIVES_VALIDATION_PATH / "*.jpg")))
-NEGATIVES_VALIDATION_GLOB = sorted(glob(str(NEGATIVES_VALIDATION_PATH / "*.jpg")))
-
 # Solution paths
 SOLUTION_PATH = Path("../solution/")
 SOLUTION_TASK1_PATH = SOLUTION_PATH / "task1"
