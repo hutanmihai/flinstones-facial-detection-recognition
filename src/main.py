@@ -33,6 +33,7 @@ from src.utils.generate_positives_negatives import (
 )
 from src.utils.helpers import show_image, intersection_over_union
 from src.utils.readers import get_annotations
+from src.utils.visualize import visualize_images_with_boxes_and_detections
 
 
 def non_maximal_suppression(image_detections, image_scores, image_size):
@@ -70,7 +71,7 @@ def run():
     model.eval()
 
     # Initialize the scales that we will use to resize the image
-    SCALES = [0.8, 0.4, 0.2]
+    SCALES = [0.5]
 
     # Load the validation images
     validation_images = np.load(VALIDATION_NUMPY_PATH)
@@ -104,7 +105,10 @@ def run():
                     window_tensor = window_tensor.to(torch.float32)
                     with torch.no_grad():
                         pred = model(window_tensor)
-                        score = pred[0][1].item()
+                        score = pred[0][0].item()
+
+                        # print("{:.10f}".format(score))
+                        # show_image(resized_patch)
 
                     if score > THRESHOLD:
                         x_min = int(x / scale)
@@ -129,7 +133,9 @@ def run():
         end_time = timeit.default_timer()
         print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
 
-    return detections, scores, file_names
+    np.save(SOLUTION_DETECTIONS_PATH, detections)
+    np.save(SOLUTION_SCORES_PATH, scores)
+    np.save(SOLUTION_FILE_NAMES_PATH, file_names)
 
 
 if __name__ == "__main__":
@@ -138,64 +144,15 @@ if __name__ == "__main__":
     # save_validation_images_numpy()
     # collapse()
 
-    # Initialize the annotations and images
+    # Initialize the annotations and images, Generate the positives and negatives
     # train_images = np.load(COLLAPSED_NUMPY_PATH)
     # annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
     # validation_images = np.load(VALIDATION_NUMPY_PATH)
     # validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
-
-    # Generate the positives and negatives
     # extract_positives_and_negatives(train_images, annotations)
     # extract_positives_and_negatives_validation(validation_images, validation_annotations)
 
-    # RUN
-    ddetections, sscores, ffile_names = run()
+    # run()
 
-    np.save(SOLUTION_DETECTIONS_PATH, ddetections)
-    np.save(SOLUTION_SCORES_PATH, sscores)
-    np.save(SOLUTION_FILE_NAMES_PATH, ffile_names)
-
-    # ddetections = np.load(SOLUTION_DETECTIONS_PATH)
-    # sscores = np.load(SOLUTION_SCORES_PATH)
-    # ffile_names = np.load(SOLUTION_FILE_NAMES_PATH)
-
-    # images = np.load(VALIDATION_NUMPY_PATH)
-    # annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
-    #
-    # for k, v in annotations.items():
-    #     for bbox, _ in v:
-    #         cv.rectangle(images[int(k.split(".")[0])], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2)
-    #
-    # for ffile_name, ddetection, score in zip(ffile_names, ddetections, sscores):
-    #     ffile_name = ffile_name.split(".")[0]
-    #     image = images[int(ffile_name)]
-    #     cv.rectangle(image, (ddetection[0], ddetection[1]), (ddetection[2], ddetection[3]), (0, 255, 0), 2)
-    #     cv.putText(
-    #         image,
-    #         "score:" + str(score)[:4],
-    #         (ddetection[0], ddetection[1]),
-    #         cv.FONT_HERSHEY_SIMPLEX,
-    #         0.5,
-    #         (0, 255, 0),
-    #         1,
-    #     )
-    #     show_image(image)
-
-    # val_positives = get_images(POSITIVES_VALIDATION_GLOB)
-    # val_negatives = get_images(NEGATIVES_VALIDATION_GLOB)
-    # val_positives = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in val_positives]
-    # val_negatives = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in val_negatives]
-    # val_pos_features = [
-    #     hog(image, pixels_per_cell=PIXELS_PER_CELL, cells_per_block=CELLS_PER_BLOCK, orientations=ORIENTATIONS)
-    #     for image in val_positives
-    # ]
-    # val_neg_features = [
-    #     hog(image, pixels_per_cell=PIXELS_PER_CELL, cells_per_block=CELLS_PER_BLOCK, orientations=ORIENTATIONS)
-    #     for image in val_negatives
-    # ]
-    # val_pos_features = np.array(val_pos_features)
-    # val_neg_features = np.array(val_neg_features)
-    # val_examples = np.concatenate((np.squeeze(val_pos_features), np.squeeze(val_neg_features)), axis=0)
-    # val_labels = np.concatenate((np.ones(len(val_pos_features)), np.zeros(len(val_neg_features))))
-    # predictions = model.predict(val_examples)
-    # print(f"Accuracy: {accuracy_score(val_labels ,predictions)}")
+    # Visualize
+    visualize_images_with_boxes_and_detections()

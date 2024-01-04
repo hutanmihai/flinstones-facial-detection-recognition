@@ -95,7 +95,7 @@ CELLS_PER_BLOCK = (2, 2)
 ORIENTATIONS = 20
 
 # Detection score threshold
-THRESHOLD = 0.75
+THRESHOLD = 0.5
 
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480
