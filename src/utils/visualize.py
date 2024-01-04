@@ -32,13 +32,23 @@ def visualize_images_with_boxes_and_detections():
     images = np.load(VALIDATION_NUMPY_PATH)
     annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
 
+    files = {}
+    for file_name in file_names:
+        image = cv.imread(f"../data/validation/images/{file_name}")
+        files[file_name] = image
+
     for k, v in annotations.items():
         for bbox, _ in v:
-            cv.rectangle(images[int(k.split(".")[0])], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2)
+            try:
+                cv.rectangle(
+                    files[str(int(k) + 1).zfill(4) + ".jpg"], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2
+                )
+            except:
+                pass
 
     for file_name, detection, score in zip(file_names, detections, scores):
         file_name = file_name
-        image = cv.imread(f"../data/validation/images/{file_name}")
+        image = files[file_name]
         cv.rectangle(image, (detection[0], detection[1]), (detection[2], detection[3]), (0, 255, 0), 2)
         cv.putText(
             image,

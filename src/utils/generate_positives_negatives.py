@@ -55,7 +55,7 @@ def extract_negatives(
         image: np.ndarray = images[int(image_index)]
         coordinates = [coord for coord, _ in annotations[image_index]]
 
-        while counter < len(coordinates) * 10:
+        while counter < len(coordinates) * 2:
             x = randint(0, IMAGE_WIDTH - DIM_HOG_WINDOW)
             y = randint(0, IMAGE_HEIGHT - DIM_HOG_WINDOW)
             box = (x, y, x + DIM_HOG_WINDOW, y + DIM_HOG_WINDOW)

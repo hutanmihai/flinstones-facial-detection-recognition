@@ -75,7 +75,7 @@ def run():
                 for x in range(0, NUM_COLS - NUM_CELL_IN_TEMPLATE):
                     descr = hog_descriptors[y : y + NUM_CELL_IN_TEMPLATE, x : x + NUM_CELL_IN_TEMPLATE].flatten()
                     score = np.dot(descr, weights)[0] + bias
-                    if score > 4:
+                    if score > 1:
                         x_min = int(x * DIM_HOG_CELL / scale)
                         y_min = int(y * DIM_HOG_CELL / scale)
                         x_max = int((x * DIM_HOG_CELL + DIM_HOG_WINDOW) / scale)
@@ -110,4 +110,4 @@ if __name__ == "__main__":
 
     run()
 
-    visualize_images_with_boxes_and_detections()
+    # visualize_images_with_boxes_and_detections()
