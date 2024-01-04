@@ -1,13 +1,11 @@
 import timeit
 
-import cv2 as cv
 import numpy as np
 import torch
 from skimage.transform import resize
 from torchvision.transforms import transforms
 
 from src.constants import (
-    VALIDATION_NUMPY_PATH,
     THRESHOLD,
     DIM_HOG_WINDOW,
     MODEL_PATH,
@@ -16,15 +14,13 @@ from src.constants import (
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
+    VALIDATION_IMAGES_PATH,
 )
-from src.utils.generate_positives_negatives import (
-    extract_cnn_images,
-)
-from src.utils.helpers import show_image, intersection_over_union, non_maximal_suppression
-from src.utils.visualize import visualize_images_with_boxes_and_detections
+from src.utils.helpers import non_maximal_suppression, show_image, write_solution
+from src.utils.readers import get_images
 
 
-def run():
+def run_task1_cnn():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = torch.load(MODEL_PATH / "model.pth")
     model.to(device)
@@ -35,7 +31,7 @@ def run():
     SCALES = [0.5, 0.3]
 
     # Load the validation images
-    validation_images = np.load(VALIDATION_NUMPY_PATH)
+    validation_images = get_images(VALIDATION_IMAGES_PATH)
 
     # Initialize the detections, scores and file names
     detections = None
@@ -94,19 +90,11 @@ def run():
         end_time = timeit.default_timer()
         print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
 
-    np.save(SOLUTION_DETECTIONS_PATH, detections)
-    np.save(SOLUTION_SCORES_PATH, scores)
-    np.save(SOLUTION_FILE_NAMES_PATH, file_names)
-
-
-if __name__ == "__main__":
-    # Collapse the images and annotations, save numpys
-    # save_train_images_numpy()
-    # save_validation_images_numpy()
-    # collapse()
-
-    # extract_cnn_images()
-
-    run()
-
-    # visualize_images_with_boxes_and_detections()
+    write_solution(
+        detections,
+        SOLUTION_DETECTIONS_PATH,
+        scores,
+        SOLUTION_SCORES_PATH,
+        file_names,
+        SOLUTION_FILE_NAMES_PATH,
+    )

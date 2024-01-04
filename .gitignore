@@ -10,14 +10,11 @@ __pycache__/
 *$py.class
 
 # BIG DATA
-data/numpy/
 data/train/collapsed_annotations.txt
-data/negatives/
-data/positives/
-data/negatives_validation/
-data/positives_validation/
-models/
-solution/
+data/train/collapsed/
 data/train_images/
 data/validation_images/
+models/
+solution/
+
 

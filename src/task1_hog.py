@@ -7,12 +7,9 @@ from skimage.feature import hog
 from skimage.transform import resize
 
 from src.constants import (
-    VALIDATION_ANNOTATIONS_PATH,
-    VALIDATION_NUMPY_PATH,
     PIXELS_PER_CELL,
     CELLS_PER_BLOCK,
     ORIENTATIONS,
-    THRESHOLD,
     DIM_HOG_CELL,
     DIM_HOG_WINDOW,
     MODEL_PATH,
@@ -21,14 +18,16 @@ from src.constants import (
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
+    VALIDATION_IMAGES_PATH,
 )
-from src.utils.generate_positives_negatives import extract_cnn_images
-from src.utils.helpers import show_image, intersection_over_union, non_maximal_suppression
-from src.utils.readers import get_annotations
-from src.utils.visualize import visualize_images_with_boxes_and_detections
+from src.utils.collapse import collapse
+from src.utils.generate_positives_negatives import extract_train_patches, extract_train_and_validation_patches
+from src.utils.helpers import show_image, intersection_over_union, non_maximal_suppression, write_solution
+from src.utils.readers import get_annotations, get_images
+from src.utils.visualize import visualize_images_with_boxes_and_detections, visualize_images_with_boxes
 
 
-def run():
+def run_task1_hog():
     # Initialize the scales that we will use to resize the image
     SCALES = [0.5, 0.4, 0.3, 0.2]
 
@@ -38,7 +37,7 @@ def run():
     bias = model.intercept_[0]
 
     # Load the validation images
-    validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in np.load(VALIDATION_NUMPY_PATH)]
+    validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in get_images(VALIDATION_IMAGES_PATH)]
 
     # Initialize the detections, scores and file names
     detections = None
@@ -95,19 +94,11 @@ def run():
         end_time = timeit.default_timer()
         print(f"Process time for {i}/{len(validation_images)} was {end_time - start_time} seconds.")
 
-    np.save(SOLUTION_DETECTIONS_PATH, detections)
-    np.save(SOLUTION_SCORES_PATH, scores)
-    np.save(SOLUTION_FILE_NAMES_PATH, file_names)
-
-
-if __name__ == "__main__":
-    # Collapse the images and annotations, save numpys
-    # save_train_images_numpy()
-    # save_validation_images_numpy()
-    # collapse()
-
-    # extract_cnn_images()
-
-    run()
-
-    # visualize_images_with_boxes_and_detections()
+    write_solution(
+        detections,
+        SOLUTION_DETECTIONS_PATH,
+        scores,
+        SOLUTION_SCORES_PATH,
+        file_names,
+        SOLUTION_FILE_NAMES_PATH,
+    )

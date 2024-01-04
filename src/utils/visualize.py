@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import cv2 as cv
 import numpy as np
 
@@ -6,44 +8,42 @@ from src.constants import (
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
-    VALIDATION_NUMPY_PATH,
     VALIDATION_ANNOTATIONS_PATH,
+    VALIDATION_IMAGES_PATH,
 )
 from src.utils.helpers import show_image
-from src.utils.readers import get_annotations
+from src.utils.readers import get_annotations, get_images
 
 
-def visualize_images_with_boxes(
-    images: np.ndarray, annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]]
-):
-    for image_index in annotations.keys():
-        image: np.ndarray = images[int(image_index)]
-        for coordinates, character in annotations[image_index]:
+def visualize_images_with_boxes(images_path: Path, annotations_path: Path):
+    images = get_images(images_path)
+    annotations = get_annotations(annotations_path)
+    for image_name in annotations.keys():
+        image: np.ndarray = images[int(image_name.split(".")[0]) - 1]
+        for coordinates, character in annotations[image_name]:
             xmin, ymin, xmax, ymax = coordinates
             cv.rectangle(image, (xmin, ymin), (xmax, ymax), COLOR_CHARACTER_MAPPING[character], 1)
-        show_image(image, image_index)
+        show_image(image, title=image_name)
 
 
-def visualize_images_with_boxes_and_detections():
+def visualize_images_with_boxes_and_detections(gt_path: Path):
     detections = np.load(SOLUTION_DETECTIONS_PATH)
     scores = np.load(SOLUTION_SCORES_PATH)
     file_names = np.load(SOLUTION_FILE_NAMES_PATH)
 
-    images = np.load(VALIDATION_NUMPY_PATH)
-    annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
+    annotations = get_annotations(gt_path)
 
     files = {}
     for file_name in file_names:
-        image = cv.imread(f"../data/validation/images/{file_name}")
+        image = cv.imread(str(VALIDATION_IMAGES_PATH / file_name))
         files[file_name] = image
 
     for k, v in annotations.items():
-        for bbox, _ in v:
+        for box, character in v:
             try:
-                cv.rectangle(
-                    files[str(int(k) + 1).zfill(4) + ".jpg"], (bbox[0], bbox[1]), (bbox[2], bbox[3]), (0, 0, 255), 2
-                )
-            except:
+                cv.rectangle(files[k], (box[0], box[1]), (box[2], box[3]), COLOR_CHARACTER_MAPPING[character], 2)
+            except KeyError:
+                # No face detected in this image
                 pass
 
     for file_name, detection, score in zip(file_names, detections, scores):

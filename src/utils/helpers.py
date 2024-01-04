@@ -4,6 +4,9 @@ from pathlib import Path
 import cv2 as cv
 import numpy as np
 
+from src.constants import SOLUTION_PATH, SOLUTION_TASK1_PATH, SOLUTION_TASK2_PATH
+
+
 ########################################################################################################################
 # CORE SHOW IMAGE FUNCTION
 ########################################################################################################################
@@ -26,6 +29,20 @@ def check_if_dirs_exist(paths: list[Path]) -> None:
     for path in paths:
         if not os.path.exists(path):
             os.makedirs(path)
+
+
+def write_solution(
+    detections: np.ndarray,
+    detection_path: Path,
+    scores: np.ndarray,
+    scores_path: Path,
+    file_names: np.ndarray,
+    file_names_path: Path,
+) -> None:
+    check_if_dirs_exist([SOLUTION_PATH, SOLUTION_TASK1_PATH, SOLUTION_TASK2_PATH])
+    np.save(detection_path, detections)
+    np.save(scores_path, scores)
+    np.save(file_names_path, file_names)
 
 
 def intersection_over_union(bbox_a, bbox_b):
