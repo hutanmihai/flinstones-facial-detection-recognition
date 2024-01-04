@@ -16,6 +16,7 @@ from src.constants import (
     POSITIVES_VALIDATION_GLOB,
     NEGATIVES_VALIDATION_GLOB,
 )
+from src.utils.helpers import check_if_dirs_exist
 from src.utils.readers import get_images
 
 
@@ -97,6 +98,8 @@ def test_classifier():
     val_neg_features = np.array(val_neg_features)
     val_examples = np.concatenate((np.squeeze(val_pos_features), np.squeeze(val_neg_features)), axis=0)
     val_labels = np.concatenate((np.ones(len(val_pos_features)), np.zeros(len(val_neg_features))))
+
+    check_if_dirs_exist([MODEL_PATH])
     model = pickle.load(open(MODEL_PATH / "model.pkl", "rb"))
     predictions = model.predict(val_examples)
     print(f"Accuracy: {accuracy_score(val_labels ,predictions)}")

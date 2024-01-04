@@ -84,9 +84,12 @@ def extract_positives_and_negatives_validation(
 
 
 def extract_train_and_validation_patches():
+    print("Extracting positives and negatives for training and validation...")
     train_images = get_images(COLLAPSED_IMAGES_PATH)
     annotations = get_annotations(COLLAPSED_ANNOTATIONS_PATH)
     validation_images = get_images(VALIDATION_IMAGES_PATH)
     validation_annotations = get_annotations(VALIDATION_ANNOTATIONS_PATH)
     extract_positives_and_negatives(train_images, annotations)
     extract_positives_and_negatives_validation(validation_images, validation_annotations)
+    print("-" * 50)
+    print("Successfully extracted positives and negatives for training and validation!")

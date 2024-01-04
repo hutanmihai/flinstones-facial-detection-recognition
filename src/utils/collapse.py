@@ -11,7 +11,7 @@ import cv2 as cv
 
 
 def collapse():
-    check_if_dirs_exist([TRAIN_DATA_PATH, COLLAPSED_IMAGES_PATH, COLLAPSED_ANNOTATIONS_PATH])
+    check_if_dirs_exist([TRAIN_DATA_PATH, COLLAPSED_IMAGES_PATH])
     zipped_paths = zip(TRAIN_ANNOTATIONS_PATHS, TRAIN_IMAGES_PATHS)
     print("Collapsing images...")
     print("Collapsing annotations...")
