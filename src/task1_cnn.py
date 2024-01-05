@@ -29,7 +29,6 @@ def run_task1_cnn():
     model.eval()
 
     # Initialize the scales that we will use to resize the image
-    # SCALES = [1, 0.5, 0.3]
     SCALES = [0.9, 0.5, 0.3]
 
     # Load the validation images
