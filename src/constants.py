@@ -10,7 +10,7 @@ CELLS_PER_BLOCK = (2, 2)
 ORIENTATIONS = 20
 
 # Detection score threshold
-THRESHOLD = 0.5
+THRESHOLD = 0.9
 # Intersection over union threshold
 IOU_THRESHOLD = 0.1
 

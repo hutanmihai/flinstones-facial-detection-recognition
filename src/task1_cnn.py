@@ -1,5 +1,6 @@
 import timeit
 
+import cv2 as cv
 import numpy as np
 import torch
 from skimage.transform import resize
@@ -23,16 +24,17 @@ from src.utils.readers import get_images
 def run_task1_cnn():
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = torch.load(MODEL_PATH / "model.pth")
+    model = torch.load(MODEL_PATH / "cnn_908_gray.pth")
     model.to(device)
     model.eval()
 
     # Initialize the scales that we will use to resize the image
     # SCALES = [1, 0.5, 0.3]
-    SCALES = [0.5, 0.3]
+    SCALES = [0.9, 0.5, 0.3]
 
     # Load the validation images
     validation_images = get_images(VALIDATION_IMAGES_PATH)
+    validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in validation_images]
 
     # Initialize the detections, scores and file names
     detections = None
@@ -58,7 +60,8 @@ def run_task1_cnn():
 
             for y in range(0, NUM_ROWS, 2):
                 for x in range(0, NUM_COLS, 2):
-                    resized_patch = resized_image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE]
+
+                    resized_patch = resized_image[y: y + WINDOW_SIZE, x: x + WINDOW_SIZE]
                     window_tensor = transforms.ToTensor()(resized_patch).unsqueeze(0).to(device)
                     window_tensor = window_tensor.to(torch.float32)
                     with torch.no_grad():
@@ -101,3 +104,7 @@ def run_task1_cnn():
     )
 
     print(f"Total time: {timeit.default_timer() - big_start_time} seconds.\n")
+
+
+if __name__ == '__main__':
+    run_task1_cnn()
