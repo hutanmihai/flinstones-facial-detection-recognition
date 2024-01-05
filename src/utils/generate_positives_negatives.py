@@ -47,9 +47,9 @@ def extract_positives(
         image: np.ndarray = images[int(image_name.split(".")[0]) - 1]
         for coordinates, character in annotations[image_name]:
             xmin, ymin, xmax, ymax = coordinates
-            if for_training and area((xmin, ymin, xmax, ymax)) < 400:
-                # show_image(image[ymin:ymax, xmin:xmax])
-                continue
+            # if for_training and area((xmin, ymin, xmax, ymax)) < 400:
+            #     # show_image(image[ymin:ymax, xmin:xmax])
+            #     continue
 
             box = cv.resize(image[ymin:ymax, xmin:xmax], (WINDOW_SIZE, WINDOW_SIZE))
             cv.imwrite(f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg", box)

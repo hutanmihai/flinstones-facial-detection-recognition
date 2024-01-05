@@ -81,14 +81,14 @@ def eval_detections(detections, scores, file_names, ground_truth_path):
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title("All faces: average precision %.3f" % average_precision)
-    # plt.savefig("precizie_medie_all_faces.png")
+    plt.savefig("results/avg_precision_all_faces.png")
     plt.show()
 
 
 def eval_detections_character(detections, scores, file_names, ground_truth_path, character):
     ground_truth_file = np.loadtxt(ground_truth_path, dtype="str")
     ground_truth_file_names = np.array(ground_truth_file[:, 0])
-    ground_truth_detections = np.array(ground_truth_file[:, 1:], np.int)
+    ground_truth_detections = np.array(ground_truth_file[:, 1:], np.int32)
 
     num_gt_detections = len(ground_truth_detections)  # numar total de adevarat pozitive
     gt_exists_detection = np.zeros(num_gt_detections)
@@ -137,7 +137,7 @@ def eval_detections_character(detections, scores, file_names, ground_truth_path,
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title(character + " faces: average precision %.3f" % average_precision)
-    plt.savefig("precizie_medie_" + character + ".png")
+    plt.savefig("results/avg_precision_" + character + ".png")
     plt.show()
 
 
@@ -195,17 +195,17 @@ evaluate_results_task1(solution_path, ground_truth_path, verbose)
 # pdb.set_trace()
 
 # task2
-# solution_path = solution_path_root + "task2/"
-#
-#
-# ground_truth_path = ground_truth_path_root + "task2_fred_gt_validare.txt"
-# evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
-#
-# ground_truth_path = ground_truth_path_root + "task2_barney_gt_validare.txt"
-# evaluate_results_task2(solution_path, ground_truth_path, "barney", verbose)
-#
-# ground_truth_path = ground_truth_path_root + "task2_betty_gt_validare.txt"
-# evaluate_results_task2(solution_path, ground_truth_path, "betty", verbose)
-#
-# ground_truth_path = ground_truth_path_root + "task2_wilma_gt_validare.txt"
-# evaluate_results_task2(solution_path, ground_truth_path, "wilma", verbose)
+solution_path = solution_path_root + "task2/"
+
+
+ground_truth_path = ground_truth_path_root + "task2_fred_gt_validation.txt"
+evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
+
+ground_truth_path = ground_truth_path_root + "task2_barney_gt_validation.txt"
+evaluate_results_task2(solution_path, ground_truth_path, "barney", verbose)
+
+ground_truth_path = ground_truth_path_root + "task2_betty_gt_validation.txt"
+evaluate_results_task2(solution_path, ground_truth_path, "betty", verbose)
+
+ground_truth_path = ground_truth_path_root + "task2_wilma_gt_validation.txt"
+evaluate_results_task2(solution_path, ground_truth_path, "wilma", verbose)

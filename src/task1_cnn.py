@@ -59,8 +59,7 @@ def run_task1_cnn():
 
             for y in range(0, NUM_ROWS, 2):
                 for x in range(0, NUM_COLS, 2):
-
-                    resized_patch = resized_image[y: y + WINDOW_SIZE, x: x + WINDOW_SIZE]
+                    resized_patch = resized_image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE]
                     window_tensor = transforms.ToTensor()(resized_patch).unsqueeze(0).to(device)
                     window_tensor = window_tensor.to(torch.float32)
                     with torch.no_grad():
@@ -105,5 +104,5 @@ def run_task1_cnn():
     print(f"Total time: {timeit.default_timer() - big_start_time} seconds.\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run_task1_cnn()
