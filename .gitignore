@@ -14,7 +14,6 @@ data/train/collapsed_annotations.txt
 data/train/collapsed/
 data/train_images/
 data/validation_images/
-models/
 solution/
 
 
