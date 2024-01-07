@@ -73,10 +73,9 @@ python src/pre_training.py
   all, it will take a lot longer.
 - Task2 runs really fast, because we use the results from task1, so be sure to run task1 first.
 
-For task1 run the following command
-
+To run task1 on the test images run the following command, but if you want to run it on the validation images, just remove the test flag.
 ```bash
-python src/task1.py
+python src/task1.py --test
 ```
 
 For task2 run the following command

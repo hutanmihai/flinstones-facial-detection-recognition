@@ -1,4 +1,5 @@
 import timeit
+import argparse
 
 import cv2 as cv
 import numpy as np
@@ -15,12 +16,13 @@ from src.constants import (
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
     VALIDATION_IMAGES_PATH,
+    TEST_IMAGES_PATH,
 )
-from src.utils.helpers import non_maximal_suppression, show_image, write_solution
+from src.utils.helpers import non_maximal_suppression, write_solution
 from src.utils.readers import get_images
 
 
-def run_task1_cnn():
+def run_task1_cnn(is_test=False):
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = torch.load(MODEL_PATH / "best_task1.pth")
@@ -31,17 +33,23 @@ def run_task1_cnn():
     SCALES = [0.9, 0.5, 0.3]
 
     # Load the validation images
-    validation_images = get_images(VALIDATION_IMAGES_PATH)
-    validation_images = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in validation_images]
+    if is_test:
+        print("Running in test mode!")
+        imgs = get_images(TEST_IMAGES_PATH)
+    else:
+        print("Running in validation mode!")
+        imgs = get_images(VALIDATION_IMAGES_PATH)
+
+    imgs = [cv.cvtColor(image, cv.COLOR_BGR2GRAY) for image in imgs]
 
     # Initialize the detections, scores and file names
     detections = None
     scores = np.array([])
     file_names = np.array([])
 
-    for i, image in enumerate(validation_images):
+    for i, image in enumerate(imgs):
         start_time = timeit.default_timer()
-        print(f"Processing image {i}/{len(validation_images)}...")
+        print(f"Processing image {i + 1}/{len(imgs)}...")
         image_scores = []
         image_detections = []
         image_name = str(i + 1).zfill(4) + ".jpg"
@@ -58,7 +66,7 @@ def run_task1_cnn():
 
             for y in range(0, NUM_ROWS, 2):
                 for x in range(0, NUM_COLS, 2):
-                    resized_patch = resized_image[y : y + WINDOW_SIZE, x : x + WINDOW_SIZE]
+                    resized_patch = resized_image[y: y + WINDOW_SIZE, x: x + WINDOW_SIZE]
                     window_tensor = transforms.ToTensor()(resized_patch).unsqueeze(0).to(device)
                     window_tensor = window_tensor.to(torch.float32)
                     with torch.no_grad():
@@ -84,7 +92,7 @@ def run_task1_cnn():
             file_names = np.append(file_names, np.repeat(image_name, len(image_scores)))
 
         end_time = timeit.default_timer()
-        print(f"Process time for {i + 1}/{len(validation_images)} was {end_time - start_time} seconds.")
+        print(f"Process time for {i + 1}/{len(imgs)} was {end_time - start_time} seconds.")
 
     write_solution(
         detections,
@@ -99,4 +107,9 @@ def run_task1_cnn():
 
 
 if __name__ == "__main__":
-    run_task1_cnn()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true", help="Flag to run in test mode")
+    args = parser.parse_args()
+
+    is_test = args.test
+    run_task1_cnn(is_test)
