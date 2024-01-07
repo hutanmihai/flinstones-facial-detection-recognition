@@ -8,10 +8,18 @@ from src.constants import (
     SOLUTION_FILE_NAMES_PATH,
     VALIDATION_IMAGES_PATH,
     MODEL_PATH,
-    LABELS_MAP, SOLUTION_DETECTIONS_BARNEY_PATH, SOLUTION_SCORES_BARNEY_PATH,
-    SOLUTION_FILE_NAMES_BARNEY_PATH, SOLUTION_DETECTIONS_BETTY_PATH, SOLUTION_SCORES_BETTY_PATH,
-    SOLUTION_FILE_NAMES_BETTY_PATH, SOLUTION_DETECTIONS_FRED_PATH, SOLUTION_SCORES_FRED_PATH,
-    SOLUTION_FILE_NAMES_FRED_PATH, SOLUTION_DETECTIONS_WILMA_PATH, SOLUTION_SCORES_WILMA_PATH,
+    LABELS_MAP,
+    SOLUTION_DETECTIONS_BARNEY_PATH,
+    SOLUTION_SCORES_BARNEY_PATH,
+    SOLUTION_FILE_NAMES_BARNEY_PATH,
+    SOLUTION_DETECTIONS_BETTY_PATH,
+    SOLUTION_SCORES_BETTY_PATH,
+    SOLUTION_FILE_NAMES_BETTY_PATH,
+    SOLUTION_DETECTIONS_FRED_PATH,
+    SOLUTION_SCORES_FRED_PATH,
+    SOLUTION_FILE_NAMES_FRED_PATH,
+    SOLUTION_DETECTIONS_WILMA_PATH,
+    SOLUTION_SCORES_WILMA_PATH,
     SOLUTION_FILE_NAMES_WILMA_PATH,
 )
 
@@ -34,7 +42,7 @@ def run_task2_cnn():
 
     for file_name, detection in zip(file_names, detections):
         image = cv.imread(str(VALIDATION_IMAGES_PATH / file_name))
-        cropped_box = cv.resize(image[detection[1]: detection[3], detection[0]: detection[2]], (40, 40))
+        cropped_box = cv.resize(image[detection[1] : detection[3], detection[0] : detection[2]], (40, 40))
         cropped_box = cv.cvtColor(cropped_box, cv.COLOR_BGR2RGB)
         tensor = transforms.ToTensor()(cropped_box).unsqueeze(0).to(device)
         output = model(tensor)
