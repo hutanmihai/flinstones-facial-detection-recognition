@@ -1,5 +1,7 @@
 from pathlib import Path
 
+TEST_IMAGES_PATH = Path("data/test/images")
+
 # Sliding window and patch dimensions
 WINDOW_SIZE = 40
 
@@ -54,13 +56,6 @@ TRAIN_ANNOTATIONS_PATHS = (
 )
 VALIDATION_ANNOTATIONS_PATH = VALIDATION_DATA_PATH / "validations_annotations.txt"
 COLLAPSED_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "collapsed_annotations.txt"
-
-# Ground truth paths
-TASK1_GT_PATH = Path("data/validation/task1_gt_validation.txt")
-TASK2_GT_BARNEY_PATH = Path("data/validation/task2_barney_gt_validation.txt")
-TASK2_GT_BETTY_PATH = Path("data/validation/task2_betty_gt_validation.txt")
-TASK2_GT_FRED_PATH = Path("data/validation/task2_fred_gt_validation.txt")
-TASK2_GT_WILMA_PATH = Path("data/validation/task2_wilma_gt_validation.txt")
 
 # Positives and negatives paths
 TRAIN_PATCHES_PATH = Path("data/patches/train_images")
