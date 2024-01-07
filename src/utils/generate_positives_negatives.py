@@ -40,16 +40,12 @@ def extract_positives(
     images: list[np.ndarray],
     annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]],
     path: Path,
-    for_training: bool = True,
 ) -> None:
     for image_name in annotations.keys():
         counter = 0
         image: np.ndarray = images[int(image_name.split(".")[0]) - 1]
         for coordinates, character in annotations[image_name]:
             xmin, ymin, xmax, ymax = coordinates
-            # if for_training and area((xmin, ymin, xmax, ymax)) < 400:
-            #     # show_image(image[ymin:ymax, xmin:xmax])
-            #     continue
 
             box = cv.resize(image[ymin:ymax, xmin:xmax], (WINDOW_SIZE, WINDOW_SIZE))
             cv.imwrite(f"{path}/{image_name.rstrip('.jpg')}_{counter}.jpg", box)
@@ -92,7 +88,7 @@ def extract_positives_and_negatives_validation(
     images: list[np.ndarray], annotations: dict[str, list[tuple[tuple[int, int, int, int], str]]]
 ) -> None:
     check_if_dirs_exist([POSITIVES_VALIDATION_PATH, NEGATIVES_VALIDATION_PATH])
-    extract_positives(images, annotations, POSITIVES_VALIDATION_PATH, for_training=False)
+    extract_positives(images, annotations, POSITIVES_VALIDATION_PATH)
     extract_negatives(images, annotations, NEGATIVES_VALIDATION_PATH)
 
 

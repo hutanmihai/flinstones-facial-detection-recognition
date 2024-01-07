@@ -1,13 +1,7 @@
 from pathlib import Path
 
-# Hog dimensions
-DIM_HOG_CELL = 3
+# Sliding window and patch dimensions
 WINDOW_SIZE = 40
-
-# Hog parameters
-PIXELS_PER_CELL = (DIM_HOG_CELL, DIM_HOG_CELL)
-CELLS_PER_BLOCK = (2, 2)
-ORIENTATIONS = 20
 
 # Detection score threshold
 THRESHOLD = 0.9
@@ -17,6 +11,9 @@ IOU_THRESHOLD = 0.1
 # Train, validation and test images dimensions
 IMAGE_WIDTH = 480
 IMAGE_HEIGHT = 360
+
+# Labels mapping
+LABELS_MAP = {"barney": 0, "fred": 1, "wilma": 2, "betty": 3, "unknown": 4}
 
 # Color - character mapping
 COLOR_CHARACTER_MAPPING = {
@@ -28,10 +25,10 @@ COLOR_CHARACTER_MAPPING = {
 }
 
 # Main paths
-TRAIN_DATA_PATH = Path("../data/train")
-VALIDATION_DATA_PATH = Path("../data/validation")
-TEST_DATA_PATH = Path("../data/test")
-MODEL_PATH = Path("../models")
+TRAIN_DATA_PATH = Path("data/train")
+VALIDATION_DATA_PATH = Path("data/validation")
+TEST_DATA_PATH = Path("data/test")
+MODEL_PATH = Path("models")
 
 # Images paths
 BARNEY_IMAGES_PATH = TRAIN_DATA_PATH / "barney"
@@ -59,23 +56,23 @@ VALIDATION_ANNOTATIONS_PATH = VALIDATION_DATA_PATH / "validations_annotations.tx
 COLLAPSED_ANNOTATIONS_PATH = TRAIN_DATA_PATH / "collapsed_annotations.txt"
 
 # Ground truth paths
-TASK1_GT_PATH = Path("../data/validation/task1_gt_validation.txt")
-TASK2_GT_BARNEY_PATH = Path("../data/validation/task2_barney_gt_validation.txt")
-TASK2_GT_BETTY_PATH = Path("../data/validation/task2_betty_gt_validation.txt")
-TASK2_GT_FRED_PATH = Path("../data/validation/task2_fred_gt_validation.txt")
-TASK2_GT_WILMA_PATH = Path("../data/validation/task2_wilma_gt_validation.txt")
+TASK1_GT_PATH = Path("data/validation/task1_gt_validation.txt")
+TASK2_GT_BARNEY_PATH = Path("data/validation/task2_barney_gt_validation.txt")
+TASK2_GT_BETTY_PATH = Path("data/validation/task2_betty_gt_validation.txt")
+TASK2_GT_FRED_PATH = Path("data/validation/task2_fred_gt_validation.txt")
+TASK2_GT_WILMA_PATH = Path("data/validation/task2_wilma_gt_validation.txt")
 
 # Positives and negatives paths
-TRAIN_PATCHES_PATH = Path("../data/train_images")
-POSITIVES_PATH = Path("../data/train_images/positives")
-NEGATIVES_PATH = Path("../data/train_images/negatives")
+TRAIN_PATCHES_PATH = Path("data/patches/train_images")
+POSITIVES_PATH = TRAIN_PATCHES_PATH / "positives"
+NEGATIVES_PATH = TRAIN_PATCHES_PATH / "negatives"
 
-VALIDATION_PATCHES_PATH = Path("../data/validation_images")
-POSITIVES_VALIDATION_PATH = Path("../data/validation_images/positives")
-NEGATIVES_VALIDATION_PATH = Path("../data/validation_images/negatives")
+VALIDATION_PATCHES_PATH = Path("data/patches/validation_images")
+POSITIVES_VALIDATION_PATH = VALIDATION_PATCHES_PATH / "positives"
+NEGATIVES_VALIDATION_PATH = VALIDATION_PATCHES_PATH / "negatives"
 
 # Task2 patches paths
-TASK2_PATCHES_PATH = Path("../data/task2_images")
+TASK2_PATCHES_PATH = Path("data/task2_images")
 TASK2_PATCHES_TRAIN_PATH = TASK2_PATCHES_PATH / "train"
 TASK2_PATCHES_BARNEY_PATH = TASK2_PATCHES_TRAIN_PATH / "barney"
 TASK2_PATCHES_BETTY_PATH = TASK2_PATCHES_TRAIN_PATH / "betty"
@@ -93,7 +90,7 @@ TASK2_PATCHES_UNKNOWN_VALIDATION_PATH = TASK2_PATCHES_VALIDATION_PATH / "unknown
 TASK2_PATCHES_FP_VALIDATION_PATH = TASK2_PATCHES_VALIDATION_PATH / "fp"
 
 # Solution paths
-SOLUTION_PATH = Path("../solution/")
+SOLUTION_PATH = Path("solution/")
 SOLUTION_TASK1_PATH = SOLUTION_PATH / "task1"
 SOLUTION_TASK2_PATH = SOLUTION_PATH / "task2"
 

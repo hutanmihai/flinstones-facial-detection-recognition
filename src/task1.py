@@ -3,7 +3,6 @@ import timeit
 import cv2 as cv
 import numpy as np
 import torch
-from skimage.transform import resize
 from torchvision.transforms import transforms
 
 from src.constants import (
@@ -24,7 +23,7 @@ from src.utils.readers import get_images
 def run_task1_cnn():
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = torch.load(MODEL_PATH / "cnn_908_gray.pth")
+    model = torch.load(MODEL_PATH / "best_task1.pth")
     model.to(device)
     model.eval()
 
@@ -52,7 +51,7 @@ def run_task1_cnn():
                 break
 
             # Resize the image
-            resized_image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
+            resized_image = cv.resize(image, [int(IMAGE_HEIGHT * scale), int(IMAGE_WIDTH * scale)])
 
             NUM_COLS = resized_image.shape[1] - WINDOW_SIZE - 1
             NUM_ROWS = resized_image.shape[0] - WINDOW_SIZE - 1
@@ -73,11 +72,6 @@ def run_task1_cnn():
                         y_max = int((y + WINDOW_SIZE) / scale)
                         image_detections.append([x_min, y_min, x_max, y_max])
                         image_scores.append(score)
-
-                        # print("{:.10f}".format(score))
-                        # show_image(resized_patch)
-                        # cv.rectangle(image, (x_min, y_min), (x_max, y_max), (0, 255, 0), 1)
-                        # show_image(image)
 
         if len(image_scores) > 0:
             image_detections, image_scores = non_maximal_suppression(np.array(image_detections), np.array(image_scores))

@@ -7,11 +7,6 @@ import numpy as np
 from src.constants import SOLUTION_PATH, SOLUTION_TASK1_PATH, SOLUTION_TASK2_PATH, IOU_THRESHOLD
 
 
-########################################################################################################################
-# CORE SHOW IMAGE FUNCTION
-########################################################################################################################
-
-
 def show_image(image: np.ndarray, title: str = "image") -> None:
     """
     Shows the image.
@@ -59,17 +54,6 @@ def intersection_over_union(bbox_a, bbox_b):
     iou = inter_area / float(box_a_area + box_b_area - inter_area)
 
     return iou
-
-
-def compute_average_precision(recall, precision):
-    m_rec = np.concatenate(([0], recall, [1]))
-    m_pre = np.concatenate(([0], precision, [0]))
-    for i in range(len(m_pre) - 1, -1, 1):
-        m_pre[i] = max(m_pre[i], m_pre[i + 1])
-    m_rec = np.array(m_rec)
-    i = np.where(m_rec[1:] != m_rec[:-1])[0] + 1
-    average_precision = np.sum((m_rec[i] - m_rec[i - 1]) * m_pre[i])
-    return average_precision
 
 
 def non_maximal_suppression(image_detections, image_scores):

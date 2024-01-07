@@ -81,7 +81,7 @@ def eval_detections(detections, scores, file_names, ground_truth_path):
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title("All faces: average precision %.3f" % average_precision)
-    plt.savefig("results/avg_precision_all_faces.png")
+    plt.savefig("src/results/avg_precision_all_faces.png")
     plt.show()
 
 
@@ -137,7 +137,7 @@ def eval_detections_character(detections, scores, file_names, ground_truth_path,
     plt.xlabel("Recall")
     plt.ylabel("Precision")
     plt.title(character + " faces: average precision %.3f" % average_precision)
-    plt.savefig("results/avg_precision_" + character + ".png")
+    plt.savefig("src/results/avg_precision_" + character + ".png")
     plt.show()
 
 
@@ -182,21 +182,17 @@ def evaluate_results_task2(solution_path, ground_truth_path, character, verbose=
 verbose = 0
 
 # change this on your machine
-solution_path_root = "../solution/"
-ground_truth_path_root = "../data/validation/"
+solution_path_root = "solution/"
+ground_truth_path_root = "data/validation/"
 
 
 # task1
 solution_path = solution_path_root + "task1/"
 ground_truth_path = ground_truth_path_root + "task1_gt_validation.txt"
-print(solution_path)
 evaluate_results_task1(solution_path, ground_truth_path, verbose)
-
-# pdb.set_trace()
 
 # task2
 solution_path = solution_path_root + "task2/"
-
 
 ground_truth_path = ground_truth_path_root + "task2_fred_gt_validation.txt"
 evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
