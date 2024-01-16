@@ -25,7 +25,7 @@ from src.utils.readers import get_images
 def run_task1_cnn(is_test: bool = False):
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = torch.load(MODEL_PATH / "best_task1.pth")
+    model = torch.jit.load(MODEL_PATH / "task1_cnn.pth")
     model.to(device)
     model.eval()
 
