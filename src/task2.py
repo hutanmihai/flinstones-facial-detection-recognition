@@ -1,3 +1,5 @@
+import argparse
+
 import numpy as np
 import cv2 as cv
 import torch
@@ -20,11 +22,11 @@ from src.constants import (
     SOLUTION_FILE_NAMES_FRED_PATH,
     SOLUTION_DETECTIONS_WILMA_PATH,
     SOLUTION_SCORES_WILMA_PATH,
-    SOLUTION_FILE_NAMES_WILMA_PATH,
+    SOLUTION_FILE_NAMES_WILMA_PATH, TEST_IMAGES_PATH, WINDOW_SIZE,
 )
 
 
-def run_task2_cnn():
+def run_task2_cnn(is_test: bool = False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = torch.load(MODEL_PATH / "best_task2.pth")
     model.to(device)
@@ -32,6 +34,13 @@ def run_task2_cnn():
 
     detections = np.load(SOLUTION_DETECTIONS_PATH)
     file_names = np.load(SOLUTION_FILE_NAMES_PATH)
+
+    if is_test:
+        print("Running in test mode!")
+        images_path = TEST_IMAGES_PATH
+    else:
+        print("Running in validation mode!")
+        images_path = VALIDATION_IMAGES_PATH
 
     solutions = {
         "barney": [np.array([]), np.array([]), np.array([])],
@@ -41,8 +50,8 @@ def run_task2_cnn():
     }
 
     for file_name, detection in zip(file_names, detections):
-        image = cv.imread(str(VALIDATION_IMAGES_PATH / file_name))
-        cropped_box = cv.resize(image[detection[1] : detection[3], detection[0] : detection[2]], (40, 40))
+        image = cv.imread(str(images_path / file_name))
+        cropped_box = cv.resize(image[detection[1]: detection[3], detection[0]: detection[2]], (WINDOW_SIZE, WINDOW_SIZE))
         cropped_box = cv.cvtColor(cropped_box, cv.COLOR_BGR2RGB)
         tensor = transforms.ToTensor()(cropped_box).unsqueeze(0).to(device)
         output = model(tensor)
@@ -80,4 +89,9 @@ def run_task2_cnn():
 
 
 if __name__ == "__main__":
-    run_task2_cnn()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--test", action="store_true", help="Flag to run in test mode")
+    args = parser.parse_args()
+    is_test = args.test
+
+    run_task2_cnn(is_test)

@@ -98,10 +98,10 @@ remove the test flag.
 python src/task1.py --test
 ```
 
-For task2 run the following command
+For task2 run the following command, but if you want to run it on the validation images, just remove the test flag.
 
 ```bash
-python src/task2.py
+python src/task2.py --test
 ```
 
 ### 3. (Optional) Run the tests
