@@ -5,6 +5,7 @@
 - Hutan Mihai Alexandru
 - Github: [hutanmihai](https://github.com/hutanmihai)
 - LinkedIn: [Mihai-Alexandru Hutan](https://www.linkedin.com/in/hutanmihai/)
+- Portfolio: [mihaihutan.ro](https://mihaihutan.ro)
 
 ## The problem statement can be found here: [Problem.pdf](./Problem.pdf)
 
