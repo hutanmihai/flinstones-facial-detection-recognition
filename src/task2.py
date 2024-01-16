@@ -22,7 +22,9 @@ from src.constants import (
     SOLUTION_FILE_NAMES_FRED_PATH,
     SOLUTION_DETECTIONS_WILMA_PATH,
     SOLUTION_SCORES_WILMA_PATH,
-    SOLUTION_FILE_NAMES_WILMA_PATH, TEST_IMAGES_PATH, WINDOW_SIZE,
+    SOLUTION_FILE_NAMES_WILMA_PATH,
+    TEST_IMAGES_PATH,
+    WINDOW_SIZE,
 )
 
 
@@ -51,7 +53,9 @@ def run_task2_cnn(is_test: bool = False):
 
     for file_name, detection in zip(file_names, detections):
         image = cv.imread(str(images_path / file_name))
-        cropped_box = cv.resize(image[detection[1]: detection[3], detection[0]: detection[2]], (WINDOW_SIZE, WINDOW_SIZE))
+        cropped_box = cv.resize(
+            image[detection[1] : detection[3], detection[0] : detection[2]], (WINDOW_SIZE, WINDOW_SIZE)
+        )
         cropped_box = cv.cvtColor(cropped_box, cv.COLOR_BGR2RGB)
         tensor = transforms.ToTensor()(cropped_box).unsqueeze(0).to(device)
         output = model(tensor)

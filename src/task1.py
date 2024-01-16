@@ -59,7 +59,7 @@ def run_task1_cnn(is_test=False):
                 break
 
             # Resize the image
-            resized_image = cv.resize(image, [int(IMAGE_HEIGHT * scale), int(IMAGE_WIDTH * scale)])
+            resized_image = cv.resize(image, (int(IMAGE_HEIGHT * scale), int(IMAGE_WIDTH * scale)))
 
             NUM_COLS = resized_image.shape[1] - WINDOW_SIZE - 1
             NUM_ROWS = resized_image.shape[0] - WINDOW_SIZE - 1

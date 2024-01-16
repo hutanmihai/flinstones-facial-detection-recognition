@@ -79,7 +79,6 @@ python src/pre_training.py
 ```
 
 - Then you can run the jupyter notebooks `task1_cnn.ipynb` and `task2_cnn.ipynb` to train the networks.
-- You might need to change the paths as they are relative to the root of the project not the notebooks.
 - `Note:` Task1 took me 30 minutes to train on a RTX3070 and Task2 took me about 5 minutes to train on the same GPU. If
   you don't have a powerful GPU or none at all, it will take a lot longer.
 - The models will overwrite the ones in the models/ folder, therefore your results might be different from the ones in

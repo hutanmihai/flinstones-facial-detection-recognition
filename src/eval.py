@@ -183,7 +183,7 @@ verbose = 0
 
 # change this on your machine
 solution_path_root = "solution/"
-ground_truth_path_root = "data/validation/"
+ground_truth_path_root = "data/test/"
 
 
 # task1
