@@ -110,7 +110,7 @@ python src/task2.py
 python src/eval.py
 ```
 
-### 4. (Optional) Visualize the results
+### 4. (Optional) Visualize the results for validation data
 
 ```bash
 python src/visualize_results.py
