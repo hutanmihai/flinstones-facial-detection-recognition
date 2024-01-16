@@ -183,25 +183,27 @@ verbose = 0
 
 # change this on your machine
 solution_path_root = "solution/"
-ground_truth_path_root = "data/validation/"
+ground_truth_path_root = "data/test/"
 
 
 # task1
 solution_path = solution_path_root + "task1/"
-ground_truth_path = ground_truth_path_root + "task1_gt_validation.txt"
+ground_truth_path = ground_truth_path_root + "task1_gt_test.txt"
+print(solution_path)
 evaluate_results_task1(solution_path, ground_truth_path, verbose)
 
 # task2
 solution_path = solution_path_root + "task2/"
 
-ground_truth_path = ground_truth_path_root + "task2_fred_gt_validation.txt"
+
+ground_truth_path = ground_truth_path_root + "task2_fred_gt_test.txt"
 evaluate_results_task2(solution_path, ground_truth_path, "fred", verbose)
 
-ground_truth_path = ground_truth_path_root + "task2_barney_gt_validation.txt"
+ground_truth_path = ground_truth_path_root + "task2_barney_gt_test.txt"
 evaluate_results_task2(solution_path, ground_truth_path, "barney", verbose)
 
-ground_truth_path = ground_truth_path_root + "task2_betty_gt_validation.txt"
+ground_truth_path = ground_truth_path_root + "task2_betty_gt_test.txt"
 evaluate_results_task2(solution_path, ground_truth_path, "betty", verbose)
 
-ground_truth_path = ground_truth_path_root + "task2_wilma_gt_validation.txt"
+ground_truth_path = ground_truth_path_root + "task2_wilma_gt_test.txt"
 evaluate_results_task2(solution_path, ground_truth_path, "wilma", verbose)

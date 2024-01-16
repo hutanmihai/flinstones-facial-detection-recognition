@@ -105,6 +105,8 @@ python src/task2.py --test
 
 ### 3. (Optional) Run the tests
 
+By default the evaluation script runs on test data, if you want to run it on validation data, you must change the paths.
+
 ```bash
 python src/eval.py
 ```

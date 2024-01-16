@@ -22,7 +22,7 @@ from src.utils.helpers import non_maximal_suppression, write_solution
 from src.utils.readers import get_images
 
 
-def run_task1_cnn(is_test=False):
+def run_task1_cnn(is_test: bool = False):
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = torch.load(MODEL_PATH / "best_task1.pth")

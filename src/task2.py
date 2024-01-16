@@ -58,8 +58,9 @@ def run_task2_cnn(is_test: bool = False):
         )
         cropped_box = cv.cvtColor(cropped_box, cv.COLOR_BGR2RGB)
         tensor = transforms.ToTensor()(cropped_box).unsqueeze(0).to(device)
-        output = model(tensor)
-        predicted = torch.argmax(output).item()
+        with torch.no_grad():
+            output = model(tensor)
+            predicted = torch.argmax(output).item()
         score = output[0][predicted].item()
         character = list(LABELS_MAP.keys())[list(LABELS_MAP.values()).index(predicted)]
 
