@@ -18,7 +18,7 @@ from src.constants import (
     VALIDATION_IMAGES_PATH,
     TEST_IMAGES_PATH,
 )
-from src.utils.helpers import non_maximal_suppression, write_solution
+from src.utils.helpers import non_maximal_suppression, write_solution, show_image
 from src.utils.readers import get_images
 
 
@@ -59,7 +59,7 @@ def run_task1_cnn(is_test: bool = False):
                 break
 
             # Resize the image
-            resized_image = cv.resize(image, (int(IMAGE_HEIGHT * scale), int(IMAGE_WIDTH * scale)))
+            resized_image = cv.resize(image, (0, 0), fx=scale, fy=scale)
 
             NUM_COLS = resized_image.shape[1] - WINDOW_SIZE - 1
             NUM_ROWS = resized_image.shape[0] - WINDOW_SIZE - 1
