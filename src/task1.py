@@ -11,14 +11,13 @@ from src.constants import (
     WINDOW_SIZE,
     MODEL_PATH,
     IMAGE_HEIGHT,
-    IMAGE_WIDTH,
     SOLUTION_DETECTIONS_PATH,
     SOLUTION_SCORES_PATH,
     SOLUTION_FILE_NAMES_PATH,
     VALIDATION_IMAGES_PATH,
     TEST_IMAGES_PATH,
 )
-from src.utils.helpers import non_maximal_suppression, write_solution, show_image
+from src.utils.helpers import non_maximal_suppression, write_solution
 from src.utils.readers import get_images
 
 
