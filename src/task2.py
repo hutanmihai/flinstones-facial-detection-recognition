@@ -30,7 +30,7 @@ from src.constants import (
 
 def run_task2_cnn(is_test: bool = False):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = torch.jit.load(MODEL_PATH / "task2_cnn.pth")
+    model = torch.load(MODEL_PATH / "best_task2.pth")
     model.to(device)
     model.eval()
 
