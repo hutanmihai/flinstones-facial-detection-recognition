@@ -16,6 +16,11 @@
 You can run it by following the instructions described below, and see the documentation [here](#documentation)
 or [here](./documentation.pdf).
 
+![Result1](./docs/images/1.png)
+![Result2](./docs/images/2.png)
+![Result3](./docs/images/3.png)
+![Result4](./docs/images/4.png)
+
 ## Required Libraries
 
 python=3.11.5
@@ -126,34 +131,57 @@ python src/visualize_results.py
 ```
 
 ## Documentation
-This project revolves around three main steps: patch extraction, classification, and detection. These steps are comprehensively explained in the following sections.
+
+This project revolves around three main steps: patch extraction, classification, and detection. These steps are
+comprehensively explained in the following sections.
 
 ### 1. Patch Extraction
 
 ### 1.1. Approach
-Upon analyzing the ground truth detection, it was observed that faces are mostly detected as squares, typically with a width and height of 80px. To simplify the implementation, I opted for 40px patches, aiming to downscale the images efficiently during implementation using a sliding window approach.
+
+Upon analyzing the ground truth detection, it was observed that faces are mostly detected as squares, typically with a
+width and height of 80px. To simplify the implementation, I opted for 40px patches, aiming to downscale the images
+efficiently during implementation using a sliding window approach.
 
 ### 1.2. Positives
-The process for handling positives is straightforward: parsing the ground truth annotations and images to extract patches. These patches are resized to 40x40px, and both the original and flipped variants are saved for additional data. I experimented with a minor tweak ignoring small detections with an area of less than 400 in the original image, but it didn’t yield significant improvements.
+
+The process for handling positives is straightforward: parsing the ground truth annotations and images to extract
+patches. These patches are resized to 40x40px, and both the original and flipped variants are saved for additional data.
+I experimented with a minor tweak ignoring small detections with an area of less than 400 in the original image, but it
+didn’t yield significant improvements.
 
 ![Positives](./docs/images/positives.png)
 
 ### 1.3. Negatives
 
-For negative patches, I pursued a random approach, generating random xmin and ymin coordinates and calculating xmax and ymax by adding 40. To ensure non-overlap with any ground truth detection, strict avoidance measures were taken.
+For negative patches, I pursued a random approach, generating random xmin and ymin coordinates and calculating xmax and
+ymax by adding 40. To ensure non-overlap with any ground truth detection, strict avoidance measures were taken.
 
-Additionally, I saved 50 negatives for each ground truth detection, which is further detailed in the binary classification section.
+Additionally, I saved 50 negatives for each ground truth detection, which is further detailed in the binary
+classification section.
 
 ![Negatives](./docs/images/negatives.png)
 
 ## 2. Classification
+
 ### 2.1. Approach
-For both tasks, Convolutional Neural Networks (CNNs) were chosen. Initially, attempts with hog descriptors didn’t exceed an average precision of 0.550 for task1. Task1 employed a binary classifier, while task2 utilized a multi-class classifier, both described in detail below.
+
+For both tasks, Convolutional Neural Networks (CNNs) were chosen. Initially, attempts with hog descriptors didn’t exceed
+an average precision of 0.550 for task1. Task1 employed a binary classifier, while task2 utilized a multi-class
+classifier, both described in detail below.
 
 ### 2.1. Binary Classification
-The binary classifier involved minimal preprocessing: converting patches to grayscale images. This choice aimed to avoid poten- tial color-based false positives and encourage the network to focus more on lines. Normalizing pixel values between 0 and 1 was also performed by dividing each by 255.
 
-Initial attempts with a small CNN yielded good validation results (more than 0.99 accuracy), but practical application with the slid- ing window revealed numerous false positives. To address this, the network was intentionally overfitted on the training images, lever- aging the nearly identical appearance of characters. This overfit- ting was achieved by employing a considerably more complex CNN architecture and providing over 300k negative examples to counter the data imbalance. This deliberate bias towards classifying as neg- ative aligned with the sliding window approach where most sent images are negatives.
+The binary classifier involved minimal preprocessing: converting patches to grayscale images. This choice aimed to avoid
+poten- tial color-based false positives and encourage the network to focus more on lines. Normalizing pixel values
+between 0 and 1 was also performed by dividing each by 255.
+
+Initial attempts with a small CNN yielded good validation results (more than 0.99 accuracy), but practical application
+with the slid- ing window revealed numerous false positives. To address this, the network was intentionally overfitted
+on the training images, lever- aging the nearly identical appearance of characters. This overfit- ting was achieved by
+employing a considerably more complex CNN architecture and providing over 300k negative examples to counter the data
+imbalance. This deliberate bias towards classifying as neg- ative aligned with the sliding window approach where most
+sent images are negatives.
 
 ```python
 model = Sequential(
@@ -180,11 +208,15 @@ model = Sequential(
 ).to(device)
 ```
 
-The network achieved over 0.99 accuracy on both test and vali- dation sets. Optimizer: Adam; learning rate: 1e-4; loss function: binary cross-entropy; batch size: 64.
+The network achieved over 0.99 accuracy on both test and vali- dation sets. Optimizer: Adam; learning rate: 1e-4; loss
+function: binary cross-entropy; batch size: 64.
 
 ### 2.2. Multi-Class Classification
 
-Preprocessing involved converting patches from BGR to RGB, and normalizing pixels between 0 and 1. Ground truth labels were mapped to integers, resulting in five classes. The architecture for the multi-class classifier is almost the same as the binary classi- fier, for similar reasons, forced overfitting. The only change being that we use 3 channels images (RGB) and changed the sigmoid activation function to softmax.
+Preprocessing involved converting patches from BGR to RGB, and normalizing pixels between 0 and 1. Ground truth labels
+were mapped to integers, resulting in five classes. The architecture for the multi-class classifier is almost the same
+as the binary classi- fier, for similar reasons, forced overfitting. The only change being that we use 3 channels
+images (RGB) and changed the sigmoid activation function to softmax.
 
 ```python
 model = Sequential(
@@ -211,21 +243,27 @@ model = Sequential(
 ).to(device)
 ```
 
-The network achieved over 0.99 accuracy on both test and validation sets. Optimizer: Adam; learning rate: 1e-4; loss function: cross-entropy loss; batch size: 64.
+The network achieved over 0.99 accuracy on both test and validation sets. Optimizer: Adam; learning rate: 1e-4; loss
+function: cross-entropy loss; batch size: 64.
 
 ## 3. Detection
+
 ### 3.1. Sliding Window
 
-The sliding window employed a 40x40px window with a stride of 2 and various downscale factors (0.9, 0.5, and 0.3) to accommodate faces of different sizes. Post-cnn processing included applying a threshold of 0.9 for predictions and non-maximal suppression (0.1 IoU threshold) to finalize confident detections. Task2 utilized results from Task1, passing detections to the multi-class CNN classifier for character classification.
-
+The sliding window employed a 40x40px window with a stride of 2 and various downscale factors (0.9, 0.5, and 0.3) to
+accommodate faces of different sizes. Post-cnn processing included applying a threshold of 0.9 for predictions and
+non-maximal suppression (0.1 IoU threshold) to finalize confident detections. Task2 utilized results from Task1, passing
+detections to the multi-class CNN classifier for character classification.
 
 ## 4. Results
 
-We measure the performance of our approach using the mean average precision metric. The results are presented in the following images:
+We measure the performance of our approach using the mean average precision metric. The results are presented in the
+following images:
 
 ![Task1](./src/results/avg_precision_all_faces.png)
 
-For task 2, we measure the mean average precision for each character, and the results are presented in the following images:
+For task 2, we measure the mean average precision for each character, and the results are presented in the following
+images:
 
 ![Task2](./src/results/avg_precision_barney.png)
 
