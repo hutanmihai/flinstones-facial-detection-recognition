@@ -22,6 +22,7 @@ python=3.11.5
 numpy==1.26.3
 opencv-python==4.9.0.80
 matplotlib==3.8.2
+scikit-image==0.22.0
 jupyter==1.0.0
 torch==2.1.2
 torchvision==0.16.2
@@ -37,7 +38,7 @@ version of python installed (3.11.5).
 ```bash
 conda create --name computer-vision-project-2 python=3.11.5
 conda activate computer-vision-project-2
-pip install numpy==1.26.3 opencv-python==4.9.0.80 matplotlib==3.8.2 
+pip install numpy==1.26.3 opencv-python==4.9.0.80 matplotlib==3.8.2 scikit-image==0.22.0
 
 # If you have a CUDA enabled GPU (Windows)
 

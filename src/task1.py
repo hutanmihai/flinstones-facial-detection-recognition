@@ -16,15 +16,17 @@ from src.constants import (
     SOLUTION_FILE_NAMES_PATH,
     VALIDATION_IMAGES_PATH,
     TEST_IMAGES_PATH,
+    IMAGE_WIDTH,
 )
 from src.utils.helpers import non_maximal_suppression, write_solution
 from src.utils.readers import get_images
+from skimage.transform import resize
 
 
 def run_task1_cnn(is_test: bool = False):
     big_start_time = timeit.default_timer()
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model = torch.jit.load(MODEL_PATH / "task1_cnn.pth")
+    model = torch.load(MODEL_PATH / "best_task1.pth")
     model.to(device)
     model.eval()
 
@@ -58,7 +60,7 @@ def run_task1_cnn(is_test: bool = False):
                 break
 
             # Resize the image
-            resized_image = cv.resize(image, (0, 0), fx=scale, fy=scale)
+            resized_image = resize(image, [IMAGE_HEIGHT * scale, IMAGE_WIDTH * scale])
 
             NUM_COLS = resized_image.shape[1] - WINDOW_SIZE - 1
             NUM_ROWS = resized_image.shape[0] - WINDOW_SIZE - 1
